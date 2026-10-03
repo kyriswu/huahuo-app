@@ -1,0 +1,53 @@
+name: huahuo_desktop
+description: Huahuo AI creation desktop for Windows and macOS.
+publish_to: none
+
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  go_router: ^14.2.7
+  crypto: ^3.0.6
+  file_selector: ^1.1.0
+  flutter_secure_storage: ^10.3.1
+  flutter_quill: 11.5.1
+  forge2d: ^0.14.2+1
+  huahuo_editor:
+    path: ../packages/huahuo_editor
+  huahuo_api:
+    path: ../packages/huahuo_api
+  huahuo_foundation:
+    path: ../packages/huahuo_foundation
+  huahuo_product:
+    path: ../packages/huahuo_product
+  lucide_icons_flutter: ^3.1.15
+  macos_window_utils: 1.9.1
+  path_provider: ^2.1.5
+  window_manager: 0.5.2
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/huahuo_brand_mark.png
+    - assets/images/chat_brand_mark.png
+    - assets/images/knowledge_square_banner.png
+    - assets/support/help/zh-CN/manifest.json
+    - assets/support/help/zh-CN/articles/
+    - assets/support/help/zh-CN/images/
+    - assets/support/legal/
+  fonts:
+    - family: NotoSansSC
+      fonts:
+        - asset: assets/fonts/NotoSansSC-Variable.ttf

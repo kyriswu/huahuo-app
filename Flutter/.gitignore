@@ -1,0 +1,16 @@
+**/.DS_Store
+**/.dart_tool/
+**/.fvm/
+**/build/
+**/*.log
+**/*.trace
+exports/
+dist/
+
+# FVM Version Cache
+.fvm/
+
+# Local Graphify tooling and generated graphs
+.graphify-venv/
+tool/graphify/.venv/
+graphify-out/

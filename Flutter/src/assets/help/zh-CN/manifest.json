@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026.07.30",
+  "locale": "zh-CN",
+  "groups": [
+    {
+      "id": "software",
+      "title": "软件使用说明书",
+      "summary": "从内容采集、资产整理到 AI 辅助创作的完整说明",
+      "order": 0
+    },
+    {
+      "id": "recordingCard",
+      "title": "录音卡使用指南",
+      "summary": "连接、录音、传输、转写与声纹管理",
+      "order": 1
+    }
+  ],
+  "images": [
+    {
+      "id": "customer-service-qr",
+      "assetPath": "assets/help/zh-CN/images/customer_service_qr.png",
+      "alt": "客服二维码"
+    },
+    {
+      "id": "ai-feed-graph",
+      "assetPath": "assets/help/zh-CN/images/guide_ai_feed_graph.png",
+      "alt": "AI 喂养知识图谱示例"
+    },
+    {
+      "id": "free-creation-editor",
+      "assetPath": "assets/help/zh-CN/images/guide_free_creation.png",
+      "alt": "自由创作编辑器界面"
+    },
+    {
+      "id": "recording-card-management",
+      "assetPath": "assets/help/zh-CN/images/guide_recording_card_management.png",
+      "alt": "录音卡设备管理界面"
+    },
+    {
+      "id": "recording-card-wifi-steps",
+      "assetPath": "assets/help/zh-CN/images/guide_recording_card_wifi.png",
+      "alt": "录音卡 Wi-Fi 四步传输界面"
+    }
+  ],
+  "articles": [
+    {
+      "id": "software-getting-started",
+      "title": "快速开始",
+      "summary": "用最短路径完成采集、沉淀、AI 喂养和自由创作",
+      "group": "software",
+      "order": 0,
+      "assetPath": "assets/help/zh-CN/articles/software-getting-started.md",
+      "tags": ["入门", "流程", "开始", "功能介绍"]
+    },
+    {
+      "id": "software-free-creation",
+      "title": "自由创作",
+      "summary": "使用富文本、图片、笔记导入、AI 技能和创作历史",
+      "group": "software",
+      "order": 6,
+      "assetPath": "assets/help/zh-CN/articles/software-free-creation.md",
+      "tags": ["自由创作", "编辑器", "AI 技能", "历史", "深度洞察"]
+    },
+    {
+      "id": "software-capture",
+      "title": "内容采集与导入",
+      "summary": "创建笔记、导入链接和文件，并使用会议或独白录音",
+      "group": "software",
+      "order": 2,
+      "assetPath": "assets/help/zh-CN/articles/software-capture.md",
+      "tags": ["笔记", "链接", "录音", "导入"]
+    },
+    {
+      "id": "software-ai-feeding",
+      "title": "思想图谱与资产聚合",
+      "summary": "查看已沉淀资产关系、切换 2D/3D、筛选节点并启动聚合",
+      "group": "software",
+      "order": 1,
+      "assetPath": "assets/help/zh-CN/articles/software-ai-feeding.md",
+      "tags": ["图谱", "沉淀", "聚合", "筛选"]
+    },
+    {
+      "id": "software-knowledge",
+      "title": "外部世界与频道订阅",
+      "summary": "订阅九个固定频道，查看文章并按需沉淀到资产",
+      "group": "software",
+      "order": 4,
+      "assetPath": "assets/help/zh-CN/articles/software-knowledge.md",
+      "tags": ["外部世界", "频道", "订阅", "沉淀"]
+    },
+    {
+      "id": "software-assets",
+      "title": "我的资产与沉淀",
+      "summary": "管理已沉淀内容、来源、文件夹和照片影像",
+      "group": "software",
+      "order": 3,
+      "assetPath": "assets/help/zh-CN/articles/software-assets.md",
+      "tags": ["我的资产", "文件夹", "沉淀"]
+    },
+    {
+      "id": "software-creation",
+      "title": "创作空间",
+      "summary": "使用四种专项能力、今日推送和自由创作",
+      "group": "software",
+      "order": 5,
+      "assetPath": "assets/help/zh-CN/articles/software-creation.md",
+      "tags": ["创作空间", "个人 IP", "获客营销", "视觉设计", "视频分析"]
+    },
+    {
+      "id": "software-chat",
+      "title": "聊一聊与选区改写",
+      "summary": "携带选中文本与 AI 对话，并审阅增删差异",
+      "group": "software",
+      "order": 7,
+      "assetPath": "assets/help/zh-CN/articles/software-chat.md",
+      "tags": ["聊天", "改写", "选区", "差异"]
+    },
+    {
+      "id": "software-transcription",
+      "title": "录音与语音转写",
+      "summary": "使用会议、独白、内录和录音卡文件生成转写文本",
+      "group": "software",
+      "order": 8,
+      "assetPath": "assets/help/zh-CN/articles/software-transcription.md",
+      "tags": ["录音", "转写", "独白", "会议"]
+    },
+    {
+      "id": "software-voiceprint",
+      "title": "声纹管理",
+      "summary": "从设置创建、录入和管理说话人声纹档案",
+      "group": "software",
+      "order": 9,
+      "assetPath": "assets/help/zh-CN/articles/software-voiceprint.md",
+      "tags": ["设置", "声纹", "说话人", "隐私"]
+    },
+    {
+      "id": "software-profile",
+      "title": "个人中心",
+      "summary": "查看定位等级、会员、使用频率和个人入口",
+      "group": "software",
+      "order": 10,
+      "assetPath": "assets/help/zh-CN/articles/software-profile.md",
+      "tags": ["我的", "个人中心", "等级", "会员"]
+    },
+    {
+      "id": "software-settings",
+      "title": "设置、账号与隐私",
+      "summary": "管理账号安全、声纹、代表作、权限和版本更新",
+      "group": "software",
+      "order": 11,
+      "assetPath": "assets/help/zh-CN/articles/software-settings.md",
+      "tags": ["设置", "账号安全", "权限", "版本更新"]
+    },
+    {
+      "id": "recording-card-overview",
+      "title": "设备认识与使用准备",
+      "summary": "认识录音卡硬件、状态、电量和使用前准备",
+      "group": "recordingCard",
+      "order": 0,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-overview.md",
+      "tags": ["录音卡", "准备", "状态"]
+    },
+    {
+      "id": "recording-card-connect",
+      "title": "蓝牙连接",
+      "summary": "完成设备发现、蓝牙权限、连接和断开",
+      "group": "recordingCard",
+      "order": 1,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-connect.md",
+      "tags": ["蓝牙", "Wi-Fi", "热点", "权限"]
+    },
+    {
+      "id": "recording-card-record",
+      "title": "开始、暂停与结束录音",
+      "summary": "理解录音控制、计时和状态同步",
+      "group": "recordingCard",
+      "order": 2,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-record.md",
+      "tags": ["录音", "暂停", "继续", "结束"]
+    },
+    {
+      "id": "recording-card-wifi-transfer",
+      "title": "Wi-Fi 四步传输",
+      "summary": "打开录音卡热点、加入热点、传输文件并完成校验",
+      "group": "recordingCard",
+      "order": 4,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-wifi-transfer.md",
+      "tags": ["Wi-Fi", "热点", "四步传输", "权限"]
+    },
+    {
+      "id": "recording-card-file-management",
+      "title": "文件管理",
+      "summary": "使用紧凑菜单管理本地与卡内录音文件",
+      "group": "recordingCard",
+      "order": 3,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-file-management.md",
+      "tags": ["文件", "本地", "卡内", "删除"]
+    },
+    {
+      "id": "recording-card-playback-export",
+      "title": "播放与导出",
+      "summary": "播放已校验的本地文件并使用系统面板安全导出",
+      "group": "recordingCard",
+      "order": 5,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-playback-export.md",
+      "tags": ["播放", "导出", "分享", "文件"]
+    },
+    {
+      "id": "recording-card-troubleshooting",
+      "title": "录音卡故障排查",
+      "summary": "处理连接、录音、传输、电量和文件异常",
+      "group": "recordingCard",
+      "order": 6,
+      "assetPath": "assets/help/zh-CN/articles/recording-card-troubleshooting.md",
+      "tags": ["故障", "连接", "电量", "日志"]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "reportDate": "2026-08-07",
+  "status": "CLIENT_VERIFIED_LIVE_AND_DOCS_BLOCKED",
+  "summary": "客户端合同和 Fail-closed 边界通过本地测试；Docs DTO、39 后端部署和真实支付 Provider 未验收。",
+  "baselines": {
+    "appCommit": "0e4e58a7133a95ad22c2530fcf8665c49b803b5e",
+    "appWorkingTree": "DIRTY_UNCOMMITTED",
+    "docsCommit": "97e510c8b7e2a2e33cc4bbf809fa666e26983bd3",
+    "docsWorkingTree": "15 tracked changes + 1 untracked API 28"
+  },
+  "branches": {
+    "app": "Flutter-Desk-Mobile",
+    "docs": "codex/membership-payments-v1"
+  },
+  "products": ["pro_30d", "pro_365d", "max_365d"],
+  "tests": [
+    {"name": "workspace_pub_get", "status": "PASS"},
+    {"name": "huahuo_api_analyze", "status": "PASS", "issues": 0},
+    {"name": "huahuo_api_full_test", "status": "PASS", "passed": 60, "failed": 0},
+    {"name": "mobile_analyze", "status": "PASS_WITH_INFO", "errors": 0, "warnings": 0, "infos": 170},
+    {"name": "mobile_full_test", "status": "PASS", "passed": 1163, "failed": 0},
+    {"name": "api27_billing_targeted", "status": "PASS", "passed": 36, "failed": 0},
+    {"name": "desktop_analyze", "status": "PASS", "issues": 0},
+    {"name": "desktop_full_test", "status": "PASS", "passed": 222, "failed": 0},
+    {"name": "scm_check", "status": "PASS", "activeFiles": 662},
+    {"name": "source_reachability", "status": "PASS", "reachable": 262, "total": 262},
+    {"name": "git_diff_check", "status": "PASS"},
+    {"name": "backend39_live", "status": "SKIPPED_NO_ENV"},
+    {"name": "wechat_device_payment", "status": "SKIPPED_PROVIDER_CONFIG"},
+    {"name": "alipay_device_payment", "status": "SKIPPED_PROVIDER_CONFIG"},
+    {"name": "apple_sandbox_payment", "status": "SKIPPED_PROVIDER_CONFIG"},
+    {"name": "android_debug_apk", "status": "PASS", "artifact": "Flutter/src/build/app/outputs/flutter-apk/app-debug.apk", "sizeMiB": 184},
+    {"name": "macos_desktop_unsigned_release", "status": "PASS", "artifact": "Flutter/desktop/build/macos/unsigned-derived/Build/Products/Release/huahuo_desktop.app", "sizeMiB": 72},
+    {"name": "android_ios_signed_release", "status": "NOT_RUN_THIS_AUDIT"}
+  ],
+  "clientRuntime": {
+    "billingOperations": 5,
+    "serverOnlyCallbackRecords": 3,
+    "callbackRuntimeEndpoints": 0,
+    "desktopPurchaseEntry": false,
+    "workFeedAiEnabled": false
+  },
+  "blockers": [
+    "API27 and API28 membership DTO conflict",
+    "API28 response DTOs and cancelled semantics are incomplete",
+    "chat, ASR and storage remaining-usage projection is absent",
+    "Docs API28 is still untracked",
+    "39 Backend deployment and Provider configuration were not verified",
+    "Flutter 3.44.6 final acceptance is pending"
+  ]
+}

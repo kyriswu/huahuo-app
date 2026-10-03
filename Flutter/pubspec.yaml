@@ -1,0 +1,23 @@
+name: huahuo_flutter_workspace
+description: Infinite Huahuo mobile and desktop Flutter workspace.
+publish_to: none
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+workspace:
+  - src
+  - desktop
+  - packages/huahuo_foundation
+  - packages/huahuo_editor
+  - packages/huahuo_api
+  - packages/huahuo_product
+
+flutter:
+  uses-material-design: true
+
+hooks:
+  user_defines:
+    sqlite3:
+      source: source
+      path: third_party/sqlite/sqlite3.c

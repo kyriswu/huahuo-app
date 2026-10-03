@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="huahuoai_media_capture" path="huahuoai-media-capture/" />
+    <files-path name="huahuoai_recording_exports" path="recordings/temporary/export/" />
+    <files-path name="huahuoai_user_recording_exports" path="recordings/users/" />
+    <cache-path name="huahuoai_knowledge_exports" path="HuahuoAI/TemporaryTransfers/knowledge/" />
+</paths>

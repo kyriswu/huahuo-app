@@ -1,0 +1,27 @@
+PODS:
+  - Flutter (1.0.0)
+  - QCloudRealTime (3.1.39):
+    - VoiceCommon
+  - VoiceCommon (1.0.5)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - QCloudRealTime (= 3.1.39)
+
+SPEC REPOS:
+  trunk:
+    - QCloudRealTime
+    - VoiceCommon
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  QCloudRealTime: 1fbd5af1d3fa3e13011ba8e2b72e4685f0b5ecad
+  VoiceCommon: 9173989ada4b13bea37cb6719b371597cdda4ee9
+
+PODFILE CHECKSUM: 30a5ecb3796e3670ebd5730afe922b49937c3582
+
+COCOAPODS: 1.16.2

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="home_widget_surface">#FF171A1F</color>
+    <color name="home_widget_text_primary">#FFF7F8FA</color>
+    <color name="home_widget_text_secondary">#FFB0B7C3</color>
+    <color name="home_widget_accent">#FF77D8C2</color>
+    <color name="home_widget_action">#FFF1F3F5</color>
+    <color name="home_widget_action_text">#FF171A1F</color>
+</resources>

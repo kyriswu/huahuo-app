@@ -1,0 +1,4 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*] = $(inherited) "$(PODS_ROOT)/QCloudRealTime/sdk/QCloudRealTime.xcframework/ios-arm64_armv7" "$(PODS_ROOT)/VoiceCommon/VoiceCommon.xcframework/ios-arm64_armv7"
+FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) "$(PODS_ROOT)/QCloudRealTime/sdk/QCloudRealTime.xcframework/ios-arm64_i386_x86_64-simulator" "$(PODS_ROOT)/VoiceCommon/VoiceCommon.xcframework/ios-arm64_i386_x86_64-simulator"
+#include "Generated.xcconfig"

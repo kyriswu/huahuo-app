@@ -1,0 +1,8 @@
+# Outputs produced beside the existing smoke scripts
+results/
+evidence-*/
+smoke-evidence-*.json
+germination-result-*.md
+*-sse.log
+*-summary.json
+__pycache__/

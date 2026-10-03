@@ -1,0 +1,14 @@
+.DS_Store
+
+# Local cloud credentials (never commit long-lived secrets)
+SecretKey.csv
+
+# Flutter generated artifacts
+Flutter/src/.dart_tool/
+Flutter/src/build/
+Flutter/src/ios/Flutter/ephemeral/
+Flutter/.dart_tool/
+Flutter/build/
+Flutter/packages/*/.dart_tool/
+Flutter/packages/*/.flutter-plugins-dependencies
+Flutter/packages/*/build/

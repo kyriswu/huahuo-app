@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "buildMode": "profile",
+  "physicalDevice": false,
+  "frame": {
+    "sampleCount": 0,
+    "build": { "p95Ms": null },
+    "raster": { "p95Ms": null },
+    "total": { "p95Ms": null },
+    "jankRate": null
+  },
+  "idle": {
+    "framesAfterSettle": null,
+    "networkRequestsPerMinute": null,
+    "databaseWritesPerMinute": null,
+    "averageCpuPercent": null
+  },
+  "memory": {
+    "growthAfterNavigationGcPercent": null
+  },
+  "coverage": {
+    "iosPhysical": false,
+    "androidPhysical": false,
+    "durationMinutes": 0,
+    "weakNetworkRecovery": false,
+    "backgroundRecovery": false,
+    "largeMediaExport": false
+  }
+}

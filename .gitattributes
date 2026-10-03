@@ -1,0 +1,6 @@
+# Keep raw recording-card captures byte-for-byte and out of textual diffs.
+archive/evidence/recording-card-debug-logs/** -text -diff
+
+# Documentation inside the archive remains reviewable text.
+archive/evidence/recording-card-debug-logs/**/*.md text diff
+archive/evidence/recording-card-debug-logs/README.md text diff
