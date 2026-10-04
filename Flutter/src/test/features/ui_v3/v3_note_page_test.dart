@@ -1,3 +1,4 @@
+import 'package:huahuoai_app/app/di/native_port_providers.dart';
 import 'package:huahuoai_app/shared/markdown/v3_markdown.dart';
 import 'dart:async';
 import 'dart:typed_data';

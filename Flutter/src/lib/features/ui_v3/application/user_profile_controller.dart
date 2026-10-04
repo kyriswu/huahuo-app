@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as image;
 import 'package:path_provider/path_provider.dart';
 
+import '../../../app/di/native_port_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
 import '../../../core/auth/session_store.dart';

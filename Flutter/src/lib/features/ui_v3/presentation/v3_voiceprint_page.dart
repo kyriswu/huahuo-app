@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/di/native_port_providers.dart';
 import '../../../app/di/onboarding_providers.dart';
-import '../../../app/bootstrap/app_providers.dart';
 import '../../../shared/navigation/safe_navigation.dart';
 import '../../../app/navigation/app_route_paths.dart';
 import '../../../core/native/platform_permissions_port.dart';

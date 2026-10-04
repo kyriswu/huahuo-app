@@ -21,6 +21,19 @@ Never create a Markdown mirror for a source file or a generated source index.
   Simulator is not a physical-device substitute; follow
   `Flutter/docs/runbooks/ios-real-device-debug.md`.
 
+## Desktop scope
+
+- The current reconstruction scope is mobile (`Flutter/src`) and the shared
+  protocol/domain packages. The existing `Flutter/desktop` application is
+  parked and is not a P0/P1 migration target.
+- Do not spend current architecture work on desktop analyzer debt, desktop
+  UI decomposition, desktop feature parity, or desktop-only performance. Do
+  not add new desktop behavior while the mobile boundaries are being rebuilt.
+- If desktop support becomes a real product requirement later, treat it as a
+  new application effort: build a JavaScript desktop shell around the shared
+  contracts and explicitly re-evaluate the platform boundary. Do not continue
+  extending the current `Flutter/desktop` implementation by default.
+
 ## Graphify and impact review
 
 Use the project-pinned Graphify CLI/skill when available. Before a complex

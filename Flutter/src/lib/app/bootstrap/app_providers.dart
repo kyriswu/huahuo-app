@@ -3,6 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import '../di/auth_providers.dart';
+import '../di/native_port_providers.dart';
 import '../../features/ingestion/data/internal_recording_session_store.dart';
 
 import 'package:crypto/crypto.dart';
@@ -29,21 +31,14 @@ import '../../core/database/v3_deposit_dao.dart';
 import '../../core/device/device_identity_store.dart';
 import '../../core/diagnostics/diagnostic_export_service.dart';
 import '../../core/diagnostics/diagnostic_logger.dart';
-import '../../core/native/native_file_port.dart';
-import '../../core/native/incoming_material_port.dart';
-import '../../core/native/knowledge_export_port.dart';
 import '../../core/native/native_playback_port.dart';
-import '../../core/native/platform_permissions_port.dart';
 import '../../core/native/recording_card_native_port.dart';
-import '../../core/native/screen_capture_port.dart';
 import '../../core/native/voice_recorder_port.dart';
 import '../../core/storage/file_storage_port.dart';
 import '../../core/storage/private_media_path_resolver.dart';
 import '../../core/storage/private_recording_path_resolver.dart';
 import '../../core/storage/upload_draft_store.dart';
 import '../../shared/ui_v3/v3_brand_mark.dart';
-import '../../features/auth/application/auth_controller.dart';
-import '../../features/auth/data/auth_api.dart';
 import '../../features/backend_contracts/data/backend_contract_api.dart';
 import '../../features/billing/data/account_usage_repository.dart';
 import '../../features/book_work/application/mobile_book_work_controller.dart';
@@ -148,7 +143,6 @@ import '../../features/ui_v3/data/workspace_content_sync.dart';
 import '../../features/ui_v3/data/workspace_content_sync_store.dart';
 import '../../features/ui_v3/domain/feed_item_models.dart';
 import '../../features/ui_v3/domain/voiceprint_profile.dart';
-import 'app_bootstrap_controller.dart';
 import 'core_provider_module.dart';
 import 'upload_recovery_bootstrap.dart';
 
@@ -177,11 +171,6 @@ final dailyTopicControllerProvider =
       return controller;
     });
 
-// resident-provider: Shares one auth api dependency for the full account session.
-final authApiProvider = Provider<AuthApiPort>((ref) {
-  return AuthApi(apiClient: ref.watch(apiClientProvider));
-});
-
 // resident-provider: Shares one backend contract api dependency for the full account session.
 final backendContractApiProvider = Provider<BackendContractApiPort>((ref) {
   return BackendContractApi(apiClient: ref.watch(apiClientProvider));
@@ -209,50 +198,6 @@ String? resolveRuntimeGraphId({
   final sessionValue = sessionWorkspaceId?.trim();
   return sessionValue == null || sessionValue.isEmpty ? null : sessionValue;
 }
-
-// resident-provider: Preserves the app bootstrap controller state machine across route transitions.
-final appBootstrapControllerProvider =
-    ChangeNotifierProvider<AppBootstrapController>((ref) {
-      final authApi = ref.read(authApiProvider);
-      final metadata = ref.read(runtimeClientMetadataProvider);
-      final UserTimeZoneApiPort? userTimeZoneApi =
-          authApi is UserTimeZoneApiPort
-          ? authApi as UserTimeZoneApiPort
-          : null;
-      final controller = AppBootstrapController(
-        secureTokenStore: ref.read(secureTokenStoreProvider),
-        sessionStore: ref.read(sessionStoreProvider),
-        authApi: authApi,
-        sessionRefresh: ref.read(authSessionRefreshCoordinatorProvider),
-        userTimeZone: metadata.timeZone,
-        userTimeZoneIsFallback: metadata.timeZoneIsFallback,
-        userTimeZoneApi: userTimeZoneApi,
-      );
-      unawaited(
-        Future<void>.microtask(controller.restore).catchError((Object _) {
-          controller.markRestoreFailed('SESSION_RESTORE_TRIGGER_FAILED');
-        }),
-      );
-      return controller;
-    });
-
-// resident-provider: Preserves the auth controller state machine across route transitions.
-final authControllerProvider = ChangeNotifierProvider<AuthController>((ref) {
-  final metadata = ref.watch(runtimeClientMetadataProvider);
-  final authApi = ref.read(authApiProvider);
-  final UserTimeZoneApiPort? userTimeZoneApi = authApi is UserTimeZoneApiPort
-      ? authApi as UserTimeZoneApiPort
-      : null;
-  return AuthController(
-    authApi: authApi,
-    sessionStore: ref.read(sessionStoreProvider),
-    deviceId: ref.watch(resolvedDeviceIdProvider),
-    clientVersion: metadata.clientVersion,
-    userTimeZone: metadata.timeZone,
-    userTimeZoneIsFallback: metadata.timeZoneIsFallback,
-    userTimeZoneApi: userTimeZoneApi,
-  );
-});
 
 // resident-provider: Shares one account-scoped local database snapshot store identity across dependent controllers.
 final localDatabaseSnapshotStoreProvider =
@@ -537,38 +482,6 @@ final knowledgeDocumentExportServiceProvider =
       ref.onDispose(service.dispose);
       return service;
     });
-
-// resident-provider: Shares one knowledge export platform port dependency for the full account session.
-final knowledgeExportPlatformPortProvider =
-    Provider<MethodChannelKnowledgeExportPort>((ref) {
-      return const MethodChannelKnowledgeExportPort();
-    });
-
-// resident-provider: Shares one knowledge share port dependency for the full account session.
-final knowledgeSharePortProvider = Provider<KnowledgeSharePort>((ref) {
-  return ref.watch(knowledgeExportPlatformPortProvider);
-});
-
-// resident-provider: Shares one native prepared document export port dependency for the full account session.
-final nativePreparedDocumentExportPortProvider =
-    Provider<NativePreparedDocumentExportPort>((ref) {
-      return ref.watch(knowledgeExportPlatformPortProvider);
-    });
-
-final nativePreparedDocumentSharePortProvider =
-    Provider<NativePreparedDocumentSharePort>((ref) {
-      return ref.watch(knowledgeExportPlatformPortProvider);
-    });
-
-// resident-provider: Shares one native file port dependency for the full account session.
-final nativeFilePortProvider = Provider<NativeFilePort>((ref) {
-  return const MethodChannelNativeFilePort();
-});
-
-// resident-provider: Shares one incoming material port dependency for the full account session.
-final incomingMaterialPortProvider = Provider<IncomingMaterialPort>((ref) {
-  return MethodChannelIncomingMaterialPort();
-});
 
 // resident-provider: Shares one voice recorder port dependency for the full account session.
 final voiceRecorderPortProvider = Provider<VoiceRecorderPort>((ref) {
@@ -858,11 +771,6 @@ final recordingApiProvider = Provider<RecordingApiPort>((ref) {
   return RecordingApi(apiClient: ref.watch(recordingApiClientProvider));
 });
 
-// resident-provider: Shares one screen capture port dependency for the full account session.
-final screenCapturePortProvider = Provider<ScreenCapturePort>((ref) {
-  return MethodChannelScreenCapturePort();
-});
-
 // resident-provider: Shares one material ingestion api dependency for the full account session.
 final materialIngestionApiProvider = Provider<MaterialIngestionApiPort>((ref) {
   final workspaceId = ref.watch(
@@ -992,8 +900,7 @@ final chatRunTrackerProvider = ChangeNotifierProvider<ChatRunTracker>((ref) {
   final automaticOutlineRecovery = ref.watch(
     automaticOutlineRecoveryStoreProvider,
   );
-  AssistantRuntimePort assistantRuntime =
-      const UnavailableAssistantRuntime();
+  AssistantRuntimePort assistantRuntime = const UnavailableAssistantRuntime();
   AssistantRuntimeStreamPort? assistantRuntimeStream;
   NoteFileAgentRunStatusPort? fileAgentRuns;
   NoteFileAgentClient? fileAgentClient;
@@ -1887,13 +1794,6 @@ final recordingDetailControllerProvider =
         },
       );
     });
-
-// resident-provider: Shares one platform permissions port dependency for the full account session.
-final platformPermissionsPortProvider = Provider<PlatformPermissionsPort>((
-  ref,
-) {
-  return const MethodChannelPlatformPermissionsPort();
-});
 
 // resident-provider: Keeps the push runtime config value consistent across sibling route consumers.
 final pushRuntimeConfigProvider = Provider<PushRuntimeConfig>((ref) {

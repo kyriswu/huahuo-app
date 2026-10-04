@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/bootstrap/app_providers.dart';
+import '../../../app/di/auth_providers.dart';
+import '../../../app/bootstrap/core_provider_module.dart';
 import '../../../core/auth/session_store.dart';
 import '../../../shared/theme/huahuo_v3_theme.dart';
 import '../../../shared/ui_v3/v3_brand_mark.dart';

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../di/auth_providers.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/tasking/task_orchestrator.dart';
 import '../../features/ui_v3/application/profile_workspace_controller.dart';

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../app/di/native_port_providers.dart';
 import '../../../app/di/onboarding_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/navigation/app_route_paths.dart';

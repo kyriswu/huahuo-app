@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/di/native_port_providers.dart';
 import '../../../shared/navigation/safe_navigation.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../core/native/native_file_port.dart';

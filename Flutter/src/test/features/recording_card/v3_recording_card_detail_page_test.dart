@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:huahuoai_app/app/di/native_port_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';

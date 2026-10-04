@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../app/di/native_port_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/lifecycle/app_activity_coordinator.dart';
 import '../../../app/di/chat_providers.dart';
