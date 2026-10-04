@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/di/database_providers.dart';
 import '../../../app/di/billing_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/bootstrap/asset_projection_cache_scope.dart';

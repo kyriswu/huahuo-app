@@ -1,11 +1,9 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/database_write_queue.dart';
 import 'package:huahuoai_app/core/database/recording_dao.dart';

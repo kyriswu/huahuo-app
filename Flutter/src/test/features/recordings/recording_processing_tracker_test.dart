@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/performance/runtime_activity_metrics.dart';
 import 'package:huahuoai_app/core/storage/upload_draft_store.dart';

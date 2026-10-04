@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_client.dart';
 import '../domain/feed_item_models.dart';
 import 'knowledge_note_port.dart';
 

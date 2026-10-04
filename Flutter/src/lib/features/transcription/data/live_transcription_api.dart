@@ -1,10 +1,7 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
 
 const liveGatewaySessionPath = 'api/v1/realtime-asr/sessions';
 

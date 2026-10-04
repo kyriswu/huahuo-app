@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../di/media_cache_providers.dart';
 import '../di/auth_providers.dart';
 import '../di/native_port_providers.dart';
 import '../di/billing_providers.dart';

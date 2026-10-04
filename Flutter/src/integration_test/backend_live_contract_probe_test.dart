@@ -1,9 +1,8 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/auth/data/auth_api.dart';
-import 'package:huahuoai_app/features/backend_contracts/data/backend_contract_api.dart';
+import 'package:huahuoai_app/features/workspace/data/workspace_recovery_repository.dart';
 import 'package:huahuoai_app/features/chat/data/chat_api.dart';
 import 'package:huahuoai_app/features/chat/domain/chat_models.dart';
 import 'package:huahuoai_app/features/ui_v3/data/hotspot_note_repository.dart';
@@ -57,9 +56,9 @@ void main() {
       );
 
       final workspaceRetry =
-          await BackendContractApi(
+          await WorkspaceRecoveryRepository(
             apiClient: authenticatedClient,
-          ).retryWorkspaceCreate(
+          ).retryCreate(
             idempotency: const IdempotencyRequestContext(
               explicitKey: 'ios-simulator-workspace-retry-001',
               operation: 'backend-probe-workspace-retry',

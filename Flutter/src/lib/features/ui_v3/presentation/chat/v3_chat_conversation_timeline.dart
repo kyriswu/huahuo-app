@@ -1,3 +1,4 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/shared/markdown/v3_markdown.dart';
 import 'dart:async';
 
@@ -7,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../app/di/chat_providers.dart';
-import '../../../../core/api/api_client.dart';
 import '../../../../shared/theme/huahuo_v3_theme.dart';
 import '../../../../shared/ui_v3/v3_chat_mark.dart';
 import '../../../../shared/ui_v3/v3_components.dart';

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart'
+import 'package:huahuo_api/huahuo_api.dart'
     hide documentProposalAgentProfileId, documentProposalSkillProfileIds;
 import 'package:huahuoai_app/features/ui_v3/data/document_change_proposal_api.dart';
 

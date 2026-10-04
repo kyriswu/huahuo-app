@@ -1,10 +1,8 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/transcription/application/live_transcript_controller.dart';
 import 'package:huahuoai_app/features/transcription/data/live_transcription_api.dart';
 import 'package:huahuoai_app/features/transcription/data/tencent_live_asr_port.dart';

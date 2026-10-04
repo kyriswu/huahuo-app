@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/di/chat_providers.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/database/creation_canvas_draft_dao.dart';

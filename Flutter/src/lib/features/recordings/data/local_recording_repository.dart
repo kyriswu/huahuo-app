@@ -1,4 +1,4 @@
-import '../../../core/api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/recording_dao.dart';
 import '../../../core/native/native_file_port.dart';

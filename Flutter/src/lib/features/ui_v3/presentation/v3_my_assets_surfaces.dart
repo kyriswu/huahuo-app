@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/bootstrap/app_providers.dart';
+import '../../../app/di/media_cache_providers.dart';
 import '../../../shared/navigation/safe_navigation.dart';
 import '../../../app/navigation/app_route_paths.dart';
 import '../../../core/native/native_file_port.dart';

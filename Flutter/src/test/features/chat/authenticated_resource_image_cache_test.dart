@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/chat/data/authenticated_resource_image_cache.dart';
 import 'package:huahuoai_app/features/chat/data/chat_api.dart';
 

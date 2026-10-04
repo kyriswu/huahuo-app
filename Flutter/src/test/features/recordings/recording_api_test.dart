@@ -1,8 +1,7 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 import 'package:huahuoai_app/features/recordings/data/recording_api.dart';
 
 void main() {

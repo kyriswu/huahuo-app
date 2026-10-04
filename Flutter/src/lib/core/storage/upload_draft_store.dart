@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../database/app_database.dart';
 import '../database/recording_dao.dart';
 

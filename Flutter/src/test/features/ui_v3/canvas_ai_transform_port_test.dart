@@ -7,7 +7,6 @@ import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/diagnostic_log_dao.dart';
 import 'package:huahuoai_app/core/diagnostics/diagnostic_logger.dart';
 import 'package:huahuo_api/huahuo_api.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/agent/application/mobile_agent_capability_controller.dart';
 import 'package:huahuoai_app/features/agent/data/mobile_agent_capability_port.dart';
 import 'package:huahuoai_app/features/ui_v3/data/canvas_ai_transform_port.dart';

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,15 +8,13 @@ import 'package:go_router/go_router.dart';
 import '../../../app/bootstrap/asset_projection_cache_scope.dart';
 import '../../../app/navigation/app_route_observer.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
-import '../../../core/api/api_client.dart';
-import '../../../core/tasking/orchestrated_poller.dart';
-import '../../../core/tasking/task_orchestrator.dart';
 import '../../../shared/theme/huahuo_v3_theme.dart';
 import '../../../shared/ui_v3/v3_components.dart';
 import '../../../shared/ui_v3/v3_glass_foundations.dart';
 import '../../../shared/ui_v3/v3_overlays.dart';
 import '../../../shared/ui_v3/v3_text_editing.dart';
 import '../../assets/application/assets_controller.dart';
+import '../../assets/application/assets_live_refresh_coordinator.dart';
 
 enum _AssetMenuAction { sync, refresh }
 
@@ -33,7 +32,7 @@ class _V3AssetsPageState extends ConsumerState<V3AssetsPage>
   final _scrollController = ScrollController();
   final _anchorKeys = <String, GlobalKey>{};
   AssetsRequestOwner _requestOwner = AssetsRequestOwner();
-  OrchestratedPoller? _liveRefreshPoller;
+  AssetsLiveRefreshCoordinator? _liveRefreshCoordinator;
   bool _hasLiveAssetWork = false;
   bool _liveRefreshInFlight = false;
   AssetsController? _liveRefreshController;
@@ -69,7 +68,7 @@ class _V3AssetsPageState extends ConsumerState<V3AssetsPage>
 
   @override
   void dispose() {
-    _liveRefreshPoller?.dispose();
+    _liveRefreshCoordinator?.dispose();
     _cancelOwnedRefresh();
     _scrollController.dispose();
     super.dispose();
@@ -88,7 +87,7 @@ class _V3AssetsPageState extends ConsumerState<V3AssetsPage>
 
   @override
   void onActivityRouteBecameInactive() {
-    _liveRefreshPoller?.stop();
+    _liveRefreshCoordinator?.stop();
     _cancelOwnedRefresh();
   }
 
@@ -202,37 +201,19 @@ class _V3AssetsPageState extends ConsumerState<V3AssetsPage>
     if (hasLiveWork) {
       _startLiveRefresh();
     } else {
-      _liveRefreshPoller?.stop();
+      _liveRefreshCoordinator?.stop();
     }
   }
 
   void _startLiveRefresh({bool immediate = false}) {
     if (!activityRouteCanRun) return;
-    _liveRefreshPoller ??= OrchestratedPoller(
+    _liveRefreshCoordinator ??= AssetsLiveRefreshCoordinator(
       orchestrator: ref.read(taskOrchestratorProvider),
-      // performance-rfc: unified-network-pollers
-      spec: TaskSpec(
-        key: 'assets.live-refresh.account',
-        owner: 'assets.live-refresh',
-        priority: TaskPriority.foregroundDeferred,
-        resources: const <TaskResource>{TaskResource.network},
-        foregroundOnly: true,
-        replaceExisting: true,
-        retryable: true,
-        deadline: const Duration(seconds: 15),
-      ),
-      interval: const Duration(seconds: 10),
-      maxBackoff: const Duration(seconds: 30),
       activityMetrics: ref.read(runtimeActivityMetricsProvider),
-      poll: (_) async {
-        if (!mounted || !_hasLiveAssetWork || !activityRouteCanRun) {
-          return false;
-        }
-        await _reloadAssets(force: true);
-        return mounted && _hasLiveAssetWork && activityRouteCanRun;
-      },
+      canRun: () => mounted && _hasLiveAssetWork && activityRouteCanRun,
+      refresh: () => _reloadAssets(force: true),
     );
-    _liveRefreshPoller!.start(immediate: immediate);
+    _liveRefreshCoordinator!.start(immediate: immediate);
   }
 
   Future<void> _reloadAssets({

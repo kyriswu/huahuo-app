@@ -1,6 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_client.dart';
 import '../domain/assistant_runtime.dart';
 import 'chat_run_tracker.dart';
 import '../domain/chat_models.dart';
@@ -321,9 +321,7 @@ abstract final class ChatControllerPolicies {
   /// Applies the same public failure semantics to the provider-neutral run
   /// projection. Provider adapters must map their wire status before this
   /// policy is called.
-  static String? assistantRunTerminalFailureCode(
-    AssistantRunSnapshot run,
-  ) {
+  static String? assistantRunTerminalFailureCode(AssistantRunSnapshot run) {
     if (!run.isTerminal) return null;
     if (run.status == AssistantRunStatus.failed) {
       return _safeAgentRunPublicFailureCode(run.failure?.code) ??

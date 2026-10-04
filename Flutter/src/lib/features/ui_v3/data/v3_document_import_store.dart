@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 
-import '../../../core/api/api_envelope.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/native/document_import_format.dart';
 import '../../../core/native/native_file_port.dart';

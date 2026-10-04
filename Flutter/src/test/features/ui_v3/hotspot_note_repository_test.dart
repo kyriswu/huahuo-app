@@ -1,5 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/ui_v3/data/hotspot_note_repository.dart';
 import 'package:huahuoai_app/features/ui_v3/domain/feed_item_models.dart';
 

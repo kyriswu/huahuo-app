@@ -104,7 +104,7 @@ const _buildSideEffectDebtBudgets = <String, int>{};
 const _residentProviderDebtBudgets = <String, int>{};
 
 const _databasePersistenceDebtBudgets = <String, int>{
-  'lib/app/bootstrap/app_providers.dart': 2,
+  'lib/app/bootstrap/app_providers.dart': 1,
   'lib/app/runtime/database_worker_runtime.dart': 4,
   'lib/core/database/app_database.dart': 4,
   'lib/core/database/app_preferences_dao.dart': 8,

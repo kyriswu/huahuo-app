@@ -1,8 +1,8 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/bootstrap/app_providers.dart';
-import '../../../core/api/idempotency.dart';
 import '../data/work_ai_api.dart';
 import '../data/work_ai_task_api.dart';
 

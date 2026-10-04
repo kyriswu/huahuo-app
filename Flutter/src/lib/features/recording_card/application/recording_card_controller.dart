@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_envelope.dart';
 import '../../../core/device/device_identity_store.dart';
 import '../../../core/native/platform_permissions_port.dart';
 import '../../../core/native/recording_card_native_port.dart';

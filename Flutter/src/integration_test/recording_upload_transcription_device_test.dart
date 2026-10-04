@@ -1,3 +1,4 @@
+import 'package:huahuoai_app/app/di/diagnostics_providers.dart';
 import 'dart:io';
 
 import 'package:huahuoai_app/app/di/auth_providers.dart';

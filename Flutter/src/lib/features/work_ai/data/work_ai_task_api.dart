@@ -1,6 +1,4 @@
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../domain/work_ai_task.dart';
 import 'work_ai_api.dart';
 

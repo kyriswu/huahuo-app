@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../features/ingestion/domain/material_ingestion.dart';
 
 enum ScreenCaptureState {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/di/database_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../core/auth/session_store.dart';
 import '../../../app/lifecycle/app_activity_coordinator.dart';

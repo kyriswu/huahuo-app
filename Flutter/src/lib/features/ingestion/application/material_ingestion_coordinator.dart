@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_envelope.dart';
 import '../../../core/database/diagnostic_log_dao.dart';
 import '../../../core/diagnostics/diagnostic_logger.dart';
 import '../../ui_v3/application/knowledge_library_controller.dart';

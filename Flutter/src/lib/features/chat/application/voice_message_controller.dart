@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/di/chat_providers.dart';
 import '../../../app/lifecycle/app_activity_coordinator.dart';
-import '../../../core/api/upload_client.dart';
 import '../../../core/native/voice_recorder_port.dart';
 import '../../../core/storage/file_storage_port.dart';
 import '../../recordings/data/local_recording_repository.dart';

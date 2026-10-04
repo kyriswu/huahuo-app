@@ -2,11 +2,12 @@
 
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../di/auth_providers.dart';
-import '../../core/api/idempotency.dart';
+import '../di/workspace_providers.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/tasking/orchestrated_poller.dart';
 import '../../core/tasking/task_orchestrator.dart';
@@ -196,8 +197,8 @@ class _WorkspaceStatusScreenState extends ConsumerState<WorkspaceStatusScreen>
       _errorCode = null;
     });
     final result = await ref
-        .read(backendContractApiProvider)
-        .retryWorkspaceCreate(
+        .read(workspaceRecoveryRepositoryProvider)
+        .retryCreate(
           idempotency: IdempotencyRequestContext(
             operation: 'workspace-retry-create',
             scene: 'workspace-recovery',

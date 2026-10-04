@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../database/diagnostic_log_dao.dart';
 import '../performance/performance_snapshot.dart';
 

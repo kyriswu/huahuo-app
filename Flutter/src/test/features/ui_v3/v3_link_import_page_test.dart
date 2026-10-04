@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/diagnostic_log_dao.dart';
 import 'package:huahuoai_app/core/diagnostics/diagnostic_logger.dart';

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../app/di/media_cache_providers.dart';
 import '../../../app/di/native_port_providers.dart';
 import '../../../app/di/onboarding_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
@@ -16,7 +18,6 @@ import '../../../app/di/chat_providers.dart';
 import '../../../app/lifecycle/app_activity_coordinator.dart';
 import '../../../app/navigation/app_route_observer.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/native/platform_permissions_port.dart';
 import '../../../core/performance/runtime_activity_metrics.dart';
 import '../../../shared/navigation/safe_navigation.dart';

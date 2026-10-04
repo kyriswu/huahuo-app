@@ -1,6 +1,4 @@
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../../core/auth/secure_token_store.dart';
 import '../../../core/auth/session_store.dart';
 

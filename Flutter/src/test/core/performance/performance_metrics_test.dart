@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/app/runtime/runtime_provider_module.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/core/performance/database_metrics.dart';
 import 'package:huahuoai_app/core/performance/frame_metrics_collector.dart';
 import 'package:huahuoai_app/core/performance/memory_pressure_port.dart';

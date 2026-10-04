@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/di/chat_providers.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/native/voice_recorder_port.dart';
 import 'package:huahuoai_app/features/chat/application/chat_file_attachment_uploader.dart';
 import 'package:huahuoai_app/features/chat/application/chat_voice_uploader.dart';

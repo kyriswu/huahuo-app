@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../storage/private_recording_path_resolver.dart';
 
 enum NativePlaybackStatus {

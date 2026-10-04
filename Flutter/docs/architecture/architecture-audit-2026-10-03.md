@@ -110,7 +110,7 @@ Flutter 长期只保留 Conversation、Turn、RunHandle、Status、StreamEvent�
 ### 现在先迁移，不直接删除
 
 - `app_providers.dart`、`app_routes.dart`、`domain_clients.dart`、`contract_models.dart`：它们仍是运行时入口，必须先迁消费者。
-- `backend_contracts`：仍有 workspace retry 等调用，先迁到明确的用例 port。
+- `backend_contracts`：已完成迁移。workspace retry 现在由 `features/workspace/data/workspace_recovery_repository.dart` 持有；旧聚合包装、模型、测试和专用质量门禁已删除。
 - `TaskOrchestrator`、outbox/checkpoint、恢复 coordinator、schema migration：它们承载取消、恢复和数据保护。
 - Recording Card Dart/native bridge：先有协议 fixture、迟到回调和真机验证，再删兼容路径。
 

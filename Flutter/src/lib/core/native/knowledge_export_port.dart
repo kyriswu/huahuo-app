@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 import '../../features/ui_v3/domain/knowledge_export_models.dart';
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'native_file_port.dart';
 
 abstract interface class KnowledgeSharePort {

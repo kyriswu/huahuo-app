@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/api/api_client.dart';
 import '../../core/api/app_cache_policy.dart';
 import '../../core/auth/flutter_secure_token_driver.dart';
 import '../../core/auth/secure_token_store.dart';

@@ -1,11 +1,6 @@
 import 'dart:convert';
 
-import '../../../core/api/api_client.dart'
-    hide
-        documentProposalAgentProfileId,
-        documentProposalInstructionMaxBytes,
-        documentProposalSkillProfileIds;
-import '../../../core/api/idempotency.dart'
+import 'package:huahuo_api/huahuo_api.dart'
     hide
         documentProposalAgentProfileId,
         documentProposalInstructionMaxBytes,

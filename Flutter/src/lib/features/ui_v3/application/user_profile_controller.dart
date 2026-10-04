@@ -3,21 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as image;
 import 'package:path_provider/path_provider.dart';
 
+import '../../../app/di/database_providers.dart';
 import '../../../app/di/native_port_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
 import '../../../core/auth/session_store.dart';
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
 import '../../../core/api/scoped_read_cache.dart';
-import '../../../core/api/upload_client.dart';
 import '../../../core/native/native_file_port.dart';
 import '../../../core/tasking/task_orchestrator.dart';
 

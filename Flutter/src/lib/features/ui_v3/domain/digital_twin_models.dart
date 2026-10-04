@@ -1,4 +1,4 @@
-import '../../../core/api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'document_change_proposal_models.dart';
 
 const digitalTwinAgentProfileId = 'data_body';

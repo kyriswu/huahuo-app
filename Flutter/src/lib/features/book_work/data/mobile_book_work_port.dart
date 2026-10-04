@@ -1,4 +1,4 @@
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../application/mobile_book_work_contract.dart';
 
 export '../application/mobile_book_work_contract.dart';

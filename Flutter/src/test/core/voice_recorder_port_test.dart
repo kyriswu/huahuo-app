@@ -1,6 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
 import 'package:huahuoai_app/core/native/voice_recorder_port.dart';
 
 void main() {

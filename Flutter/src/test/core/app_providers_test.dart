@@ -1,3 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
+import 'package:huahuoai_app/app/di/media_cache_providers.dart';
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -11,9 +14,6 @@ import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/di/chat_providers.dart';
 import 'package:huahuoai_app/app/performance/performance_policy.dart';
 import 'package:huahuoai_app/app/runtime/runtime_provider_module.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';

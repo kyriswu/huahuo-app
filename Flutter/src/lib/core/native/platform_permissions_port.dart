@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 enum PlatformPermissionKind {
   bluetooth('bluetooth', '蓝牙'),

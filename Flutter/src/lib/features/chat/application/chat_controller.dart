@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/idempotency.dart';
 import '../../../core/api/scoped_read_cache.dart';
-import '../../../core/api/upload_client.dart';
 import 'chat_controller_policies.dart';
 import 'chat_controller_state.dart';
+import 'chat_assistant_run_reader.dart';
 import 'chat_runtime_invocation_mapper.dart';
 import 'chat_stream_reveal_buffer.dart';
 import 'chat_thread_progress_poller.dart';
@@ -45,7 +44,6 @@ final class _ControllerRunProjection {
     required this.isTerminal,
     required this.updatedAt,
     required this.assistantToolTrace,
-    required this.toolTrace,
     this.threadId,
     this.assistantMessageId,
     this.terminalFailureCode,
@@ -59,17 +57,6 @@ final class _ControllerRunProjection {
   final String? terminalFailureCode;
   final DateTime updatedAt;
   final List<AssistantToolTrace> assistantToolTrace;
-  final List<AgentRunToolTrace> toolTrace;
-}
-
-final class _ControllerRunRead {
-  const _ControllerRunRead({this.data, this.errorCode, this.retryable = true});
-
-  final _ControllerRunProjection? data;
-  final String? errorCode;
-  final bool retryable;
-
-  bool get ok => data != null && errorCode == null;
 }
 
 String _assistantStatusValue(AssistantRunStatus status) => switch (status) {
@@ -575,7 +562,6 @@ final class ChatController extends ChangeNotifier {
        // ignore: prefer_initializing_formals
        _api = api,
        // ignore: prefer_initializing_formals
-       _assistantRuntime = assistantRuntime,
        // ignore: prefer_initializing_formals
        _aliasRepository = aliasRepository,
        // ignore: prefer_initializing_formals
@@ -599,7 +585,8 @@ final class ChatController extends ChangeNotifier {
        _assistantProgress = assistantProgress,
        // ignore: prefer_initializing_formals
        _userVisibleTextProjector = userVisibleTextProjector,
-       _state = ChatControllerState.initial(scene) {
+       _state = ChatControllerState.initial(scene),
+       _assistantRunReader = ChatAssistantRunReader(assistantRuntime) {
     if (kDebugMode) {
       debugPrint(
         '[ChatState] controller=create id=${identityHashCode(this)} '
@@ -634,7 +621,7 @@ final class ChatController extends ChangeNotifier {
   }
 
   final ChatRepository _api;
-  final AssistantRuntimePort? _assistantRuntime;
+  final ChatAssistantRunReader _assistantRunReader;
   final ChatThreadAliasRepository? _aliasRepository;
   final ChatConversationAdmissionCoordinator? _admissionCoordinator;
   final ChatRunTrackingPort? _runTracker;
@@ -727,10 +714,6 @@ final class ChatController extends ChangeNotifier {
   final ValueNotifier<int> _runtimeInvocationCacheRevision = ValueNotifier<int>(
     0,
   );
-  final Set<AssistantRuntimeReadLease<AssistantRunSnapshot>>
-  _activeAssistantRunReads =
-      <AssistantRuntimeReadLease<AssistantRunSnapshot>>{};
-
   ChatControllerState get state => _state;
   bool get isRefreshingHistory => _historyRefreshInFlight;
   bool get hasMoreHistory => _historyHasMore;
@@ -2173,7 +2156,7 @@ final class ChatController extends ChangeNotifier {
 
         if (action.type == ChatNextActionType.pollAgentRun) {
           final agentRunId = action.agentRunId;
-          if (agentRunId == null || _assistantRuntime == null) {
+          if (agentRunId == null || !_assistantRunReader.isAvailable) {
             _finishPendingRunFailure(
               threadId,
               'CHAT_AGENT_RUN_STATUS_UNAVAILABLE',
@@ -2181,12 +2164,12 @@ final class ChatController extends ChangeNotifier {
             );
             return;
           }
-          final runResult = await _readControllerRun(agentRunId);
+          final runResult = await _assistantRunReader.read(agentRunId);
           if (!ownsPoll()) return;
           if (!runResult.ok || runResult.data == null) {
             lastPollErrorCode =
                 runResult.errorCode ?? 'CHAT_AGENT_RUN_POLL_FAILED';
-            lastPollFailureRetryable = runResult.retryable;
+            lastPollFailureRetryable = runResult.outcomeUnknown;
             ChatControllerPolicies.debugPollFailure(
               action,
               lastPollErrorCode,
@@ -2194,7 +2177,7 @@ final class ChatController extends ChangeNotifier {
             );
             continue;
           }
-          final run = runResult.data!;
+          final run = _projectAssistantRun(runResult.data!);
           if (run.agentRunId != agentRunId ||
               (run.threadId != null && run.threadId != threadId)) {
             _finishPendingRunFailure(
@@ -2210,7 +2193,6 @@ final class ChatController extends ChangeNotifier {
               status: ChatControllerStatus.sending,
               agentRunStatus: run.status,
               assistantToolTrace: run.assistantToolTrace,
-              agentToolTrace: run.toolTrace,
               clearError: true,
             ),
           );
@@ -2398,38 +2380,6 @@ final class ChatController extends ChangeNotifier {
     }
   }
 
-  Future<_ControllerRunRead> _readControllerRun(String agentRunId) async {
-    final runtime = _assistantRuntime;
-    if (runtime == null) {
-      return const _ControllerRunRead(
-        errorCode: 'CHAT_AGENT_RUN_STATUS_UNAVAILABLE',
-      );
-    }
-    AssistantRuntimeRead<AssistantRunSnapshot> result;
-    if (runtime is AssistantRuntimeReadLeasePort) {
-      final leasePort = runtime as AssistantRuntimeReadLeasePort;
-      final lease = leasePort.leaseReadRun(
-        handle: AssistantRunHandle(agentRunId),
-      );
-      _activeAssistantRunReads.add(lease);
-      try {
-        result = await lease.result;
-      } finally {
-        _activeAssistantRunReads.remove(lease);
-      }
-    } else {
-      result = await runtime.readRun(handle: AssistantRunHandle(agentRunId));
-    }
-    final run = result.data;
-    if (!result.ok || run == null) {
-      return _ControllerRunRead(
-        errorCode: result.errorCode ?? 'CHAT_AGENT_RUN_POLL_FAILED',
-        retryable: result.outcomeUnknown,
-      );
-    }
-    return _ControllerRunRead(data: _projectAssistantRun(run));
-  }
-
   _ControllerRunProjection _projectAssistantRun(AssistantRunSnapshot run) {
     return _ControllerRunProjection(
       agentRunId: run.handle.value,
@@ -2441,42 +2391,11 @@ final class ChatController extends ChangeNotifier {
           ChatControllerPolicies.assistantRunTerminalFailureCode(run),
       updatedAt: run.updatedAt,
       assistantToolTrace: List<AssistantToolTrace>.unmodifiable(run.toolTrace),
-      toolTrace: List<AgentRunToolTrace>.unmodifiable(
-        run.toolTrace.map(
-          (trace) => AgentRunToolTrace(
-            invocationId: trace.invocationId,
-            toolName: trace.toolName,
-            state: trace.state,
-            outcome: trace.outcome,
-            createdAt: trace.createdAt,
-            completedAt: trace.completedAt,
-            outputFiles: trace.outputFiles
-                .map(
-                  (file) => AgentRunOutputFile(
-                    resourceId: file.resourceId,
-                    fileName: file.fileName,
-                    mimeType: file.mimeType,
-                    sizeBytes: file.sizeBytes,
-                  ),
-                )
-                .toList(growable: false),
-            inputSummary: trace.inputSummary,
-          ),
-        ),
-      ),
     );
   }
 
   void _cancelActiveAgentRunReads() {
-    final assistantLeases = _activeAssistantRunReads.toList(growable: false);
-    _activeAssistantRunReads.clear();
-    for (final lease in assistantLeases) {
-      try {
-        lease.cancel();
-      } catch (_) {
-        // Route teardown must not depend on adapter cancellation quality.
-      }
-    }
+    _assistantRunReader.cancelActiveReads();
   }
 
   void _finishPendingRunFailure(
@@ -4013,7 +3932,6 @@ final class ChatController extends ChangeNotifier {
         nextAction: previousSelection.nextAction,
         agentRunStatus: previousSelection.agentRunStatus,
         assistantToolTrace: previousSelection.assistantToolTrace,
-        agentToolTrace: previousSelection.agentToolTrace,
         turnState: previousSelection.turnState,
         lastErrorCode: code,
       ),
@@ -4818,7 +4736,6 @@ final class ChatController extends ChangeNotifier {
     final previousAction = _state.nextAction;
     final previousRunStatus = _state.agentRunStatus;
     final previousAssistantToolTrace = _state.assistantToolTrace;
-    final previousToolTrace = _state.agentToolTrace;
     final preservesUnrelatedAction =
         ChatControllerPolicies.awaitsAssistant(previousAction) &&
         !(previousAction.type == ChatNextActionType.pollAgentRun &&
@@ -4844,7 +4761,6 @@ final class ChatController extends ChangeNotifier {
               nextAction: previousAction,
               agentRunStatus: previousRunStatus,
               assistantToolTrace: previousAssistantToolTrace,
-              agentToolTrace: previousToolTrace,
               clearError: true,
             ),
           );

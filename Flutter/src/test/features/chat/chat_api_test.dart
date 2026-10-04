@@ -1,8 +1,7 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/chat/application/chat_runtime_invocation_mapper.dart';
 import 'package:huahuoai_app/features/chat/data/chat_api.dart';
 import 'package:huahuoai_app/features/chat/data/remote_project_assistant_runtime.dart';

@@ -1,8 +1,8 @@
+import 'package:huahuoai_app/app/di/diagnostics_providers.dart';
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/diagnostic_log_dao.dart';
 import 'package:huahuoai_app/core/diagnostics/diagnostic_logger.dart';

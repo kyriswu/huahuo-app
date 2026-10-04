@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
-import '../api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'performance_snapshot.dart';
 
 final class InstrumentedApiTransport

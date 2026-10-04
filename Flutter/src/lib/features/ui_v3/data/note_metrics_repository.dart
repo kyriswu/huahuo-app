@@ -1,4 +1,4 @@
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 abstract interface class NoteMetricsRepository {
   Future<WorkspaceNoteMetricsPage> load({required int limit, String? cursor});

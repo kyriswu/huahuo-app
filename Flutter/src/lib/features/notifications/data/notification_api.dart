@@ -1,10 +1,8 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
 import '../../../core/database/app_preferences_dao.dart';
 import '../domain/notification_models.dart';
 

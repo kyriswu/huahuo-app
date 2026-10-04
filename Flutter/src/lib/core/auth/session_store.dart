@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'secure_token_store.dart';
 
 enum SessionAuthState { anonymous, authenticated, expired }

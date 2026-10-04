@@ -2,13 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
-import '../../../core/api/upload_client.dart';
 import '../../../core/native/voice_recorder_port.dart';
 
 const voiceprintConsentVersion = '2026-07-v1';

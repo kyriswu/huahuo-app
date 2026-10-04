@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../di/database_providers.dart';
 import '../di/auth_providers.dart';
 import '../../features/book_work/application/masterpiece_providers.dart';
 import '../lifecycle/app_activity_coordinator.dart';
 import '../runtime/database_worker_runtime.dart';
-import 'app_providers.dart';
 import 'app_bootstrap_controller.dart';
 import 'push_runtime_activation.dart';
 import 'recovery_runtime_activation.dart';

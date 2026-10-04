@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../../core/api/api_client.dart'
+import 'package:huahuo_api/huahuo_api.dart'
     hide documentProposalCandidateMaxBytes;
 import '../../../core/database/app_preferences_dao.dart';
 import '../../chat/domain/assistant_runtime.dart';

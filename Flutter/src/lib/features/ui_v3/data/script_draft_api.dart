@@ -1,4 +1,4 @@
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../application/script_draft_controller.dart';
 import '../domain/script_draft_models.dart';
 

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/idempotency.dart';
 import '../../../core/auth/session_store.dart';
 import '../../../core/database/app_preferences_dao.dart';
 import '../data/push_device_api.dart';

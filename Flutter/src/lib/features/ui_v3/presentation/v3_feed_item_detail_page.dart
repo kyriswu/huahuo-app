@@ -1,3 +1,4 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuo_foundation/huahuo_foundation.dart'
     show HuahuoMarkdownBlock, HuahuoMarkdownDocument;
 import 'package:huahuoai_app/shared/markdown/v3_markdown.dart';
@@ -10,13 +11,13 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../app/di/media_cache_providers.dart';
 import '../../../app/di/native_port_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../shared/navigation/safe_navigation.dart';
 import '../../../app/lifecycle/app_activity_coordinator.dart';
 import '../../../app/navigation/app_route_observer.dart';
 import '../../../app/navigation/app_route_paths.dart';
-import '../../../core/api/api_envelope.dart';
 import '../../chat/application/resource_image_reader.dart';
 import '../../notifications/application/pending_message_projection.dart';
 import '../../../shared/theme/huahuo_v3_theme.dart';

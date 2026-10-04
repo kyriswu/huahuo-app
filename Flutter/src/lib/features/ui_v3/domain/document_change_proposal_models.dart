@@ -1,4 +1,4 @@
-import '../../../core/api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 const documentProposalInstructionMaxBytes = 32 * 1024;
 const documentProposalCandidateMaxBytes = 8 * 1024 * 1024;

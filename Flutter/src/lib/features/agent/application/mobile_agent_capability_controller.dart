@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/di/database_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
 import '../../../core/auth/session_store.dart';
 import '../../../core/database/app_preferences_dao.dart';
 import '../data/mobile_agent_capability_port.dart';

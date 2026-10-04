@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/bootstrap/app_providers.dart';
+import '../../../app/di/media_cache_providers.dart';
 import '../../../app/navigation/app_route_observer.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
-import '../../../core/tasking/orchestrated_poller.dart';
-import '../../../core/tasking/task_orchestrator.dart';
 import '../../chat/application/resource_image_reader.dart';
-import '../../billing/application/account_usage_controller.dart';
+import '../../billing/application/account_usage_refresh_coordinator.dart';
 import '../../billing/widgets/account_usage_panel.dart';
 import '../../../shared/theme/huahuo_v3_theme.dart';
 import '../../../shared/ui_v3/v3_components.dart';
@@ -31,7 +29,7 @@ class V3AccountProfilePage extends ConsumerStatefulWidget {
 
 class _V3AccountProfilePageState extends ConsumerState<V3AccountProfilePage>
     with AppActivityRouteAware<V3AccountProfilePage> {
-  late final OrchestratedPoller _usagePoller;
+  late final AccountUsageRefreshCoordinator _usageRefresh;
   bool _nicknameSaving = false;
   bool _voiceprintSummaryLoading = true;
   bool? _voiceprintSummarySynced;
@@ -39,32 +37,11 @@ class _V3AccountProfilePageState extends ConsumerState<V3AccountProfilePage>
   @override
   void initState() {
     super.initState();
-    _usagePoller = OrchestratedPoller(
+    _usageRefresh = AccountUsageRefreshCoordinator(
+      currentController: () => ref.read(accountUsageControllerProvider),
       orchestrator: ref.read(taskOrchestratorProvider),
-      spec: TaskSpec(
-        key: 'account:usage-refresh',
-        owner: 'account-usage-page',
-        priority: TaskPriority.userVisible,
-        resources: const {TaskResource.network},
-        foregroundOnly: true,
-        replaceExisting: true,
-        retryable: true,
-        deadline: const Duration(seconds: 25),
-      ),
-      interval: const Duration(seconds: 30),
-      maxBackoff: const Duration(minutes: 2),
       activityMetrics: ref.read(runtimeActivityMetricsProvider),
-      poll: (token) async {
-        if (!activityRouteCanRun) return false;
-        final usage = ref.read(accountUsageControllerProvider);
-        await usage.load();
-        token.throwIfCancelled();
-        if (usage.status == AccountUsageStatus.failure ||
-            usage.status == AccountUsageStatus.unavailable) {
-          throw StateError('Account usage unavailable');
-        }
-        return activityRouteCanRun;
-      },
+      canRun: () => activityRouteCanRun,
     );
     ref.listenManual(accountUsageControllerProvider, (previous, next) {
       if (identical(previous, next)) return;
@@ -74,19 +51,19 @@ class _V3AccountProfilePageState extends ConsumerState<V3AccountProfilePage>
     });
     Future<void>.microtask(_refreshVoiceprintSummary);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (activityRouteCanRun) _usagePoller.start();
+      if (activityRouteCanRun) _usageRefresh.start();
     });
   }
 
   @override
-  void onActivityRouteBecameActive() => _usagePoller.start();
+  void onActivityRouteBecameActive() => _usageRefresh.start();
 
   @override
-  void onActivityRouteBecameInactive() => _usagePoller.stop();
+  void onActivityRouteBecameInactive() => _usageRefresh.stop();
 
   @override
   void dispose() {
-    _usagePoller.dispose();
+    _usageRefresh.dispose();
     super.dispose();
   }
 

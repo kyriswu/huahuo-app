@@ -1,9 +1,9 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuo_api/account_usage.dart';
 import 'package:huahuoai_app/features/billing/data/account_usage_repository.dart';
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/billing/application/account_usage_controller.dart';
 import 'package:huahuoai_app/features/billing/domain/account_usage_repository.dart';
 

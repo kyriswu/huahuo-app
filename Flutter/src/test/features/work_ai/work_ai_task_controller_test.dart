@@ -1,6 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/work_ai/application/work_ai_task_controller.dart';
 import 'package:huahuoai_app/features/work_ai/data/work_ai_task_api.dart';
 

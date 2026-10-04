@@ -1,4 +1,4 @@
-import '../../../core/api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../../core/storage/private_recording_path_resolver.dart';
 
 enum RecordingLibrarySource { localImport, microphone, device }

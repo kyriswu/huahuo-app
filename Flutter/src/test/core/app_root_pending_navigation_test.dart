@@ -21,8 +21,6 @@ import 'package:huahuoai_app/app/navigation/route_guards.dart';
 import 'package:huahuoai_app/app/navigation/pending_navigation_controller.dart';
 import 'package:huahuoai_app/app/runtime/runtime_provider_module.dart';
 import 'package:huahuoai_app/core/api/app_cache_policy.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';

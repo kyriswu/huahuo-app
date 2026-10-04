@@ -1,3 +1,5 @@
+import 'package:huahuoai_app/app/di/diagnostics_providers.dart';
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';

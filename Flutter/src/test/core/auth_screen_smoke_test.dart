@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/di/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +12,6 @@ import 'package:huahuoai_app/app/lifecycle/app_activity_coordinator.dart';
 import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
 import 'package:huahuoai_app/app/navigation/app_route_screens.dart';
 import 'package:huahuoai_app/app/navigation/app_router.dart' as app_router;
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/features/auth/application/auth_controller.dart';

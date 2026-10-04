@@ -1,6 +1,4 @@
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 const _noteFileAgentTerminalStatuses = <String>{
   'succeeded',

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/ui_v3/data/automatic_outline_recovery_store.dart';
 import 'package:huahuoai_app/features/ui_v3/data/note_file_agent_client.dart';
 import 'package:huahuoai_app/features/ui_v3/data/outline_repository.dart';

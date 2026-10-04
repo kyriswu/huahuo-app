@@ -1,7 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
 import '../../notifications/domain/notification_models.dart';
 import '../domain/feed_item_models.dart';
 

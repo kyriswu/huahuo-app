@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
-import '../../../core/api/upload_client.dart';
 import '../../../core/native/native_file_port.dart';
 import '../domain/photo_album_models.dart';
 

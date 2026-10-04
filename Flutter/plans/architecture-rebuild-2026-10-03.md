@@ -143,3 +143,170 @@ ChatPage → ChatController → AssistantConversationRepository
 - 现有桌面代码和测试无 diff；设备集成测试只更新导入并静态分析，未执行真机或服务器操作。
 
 本批代码迁移完成，但整体 P0 仍在进行。下一批先拆数据库/诊断装配的公共依赖，再拆业务 composition 与路由；不能把移到新文件视为已解决 core 对 feature 的反向依赖或 ui_v3 领域边界。
+
+## 下一批：数据库、诊断与图片缓存装配
+
+基线 `2f8e3fc`，继续同一任务分支。已阅读 ADR-002 和异步恢复不变式，Graphify 查询组合根，源码核查 read/watch/override、后台 flush 和 worker dispose 路径。
+
+目标：提取 database_providers（snapshot store、AppDatabase、worker runtime、preferences DAO），diagnostics_providers（diagnostic DAO/logger/export），media_cache_providers（resource image cache），共 8 个 provider。诊断导出仍读取相同图片容量指标，故缓存装配一并迁出；三个新模块不得导入 app_providers，也不使用兼容重导出。业务 DAO 和恢复协调器暂留原处。
+
+范围：移动 lib/test/integration_test 中的消费者、装配模块和此计划。不得修改 schema、迁移、账户键、数据路径、请求语义、worker 默认开关、read/watch、flush 时机、缓存预算或桌面源码。API 后端行为不在本批变更内。
+
+风险：同一 provider 的身份与 override 分散后遗漏消费者；数据库 worker 异步关闭和日志后台 flush 失效；缓存账户隔离被打断。保持原构造闭包，通过全移动分析、app_providers、database/worker/write queue、diagnostic batch 和图片缓存测试验证。新模块依赖无回环；存储/日志不反向依赖全局组合根；既有 gate 债务不得靠扩大预算隐藏。
+
+执行：提取声明及导入 → 迁移全部消费者并删除无用全局导入 → 验证声明唯一和代码块等价 → 格式/分析/聚焦测试 → Graphify 与源码复查。回滚仅还原声明和导入，不涉及数据格式变更。进度：实施前计划已记录。
+
+### 数据库、诊断与图片缓存装配结果
+
+- 8 个 provider 已迁到三个独立装配模块，移动源码、测试和 integration_test 消费者改用直接导入，无兼容重导出。与 `2f8e3fc` 逐段比较，构造代码保持一致；数据库构造仅增加现有 `database-worker-persistence` RFC 标记。
+- 启动运行器、画布 AI 控制器、账户页、资产页和 billing 装配移除全局组合根导入。三个新模块经源码递归检查均无 import/export/part 路径回到 `app_providers.dart`；每个迁移符号只有一个声明。此结论不代表所有业务模块已解耦。
+- 原组合根从 2,813 行降至 2,676 行。旧组合根数据库风险预算由 2 收紧至 1，新文件绑定现有 worker RFC，没有扩大或搬运豁免预算。
+- 格式和 diff 检查通过；移动 `lib test integration_test` analyzer 无 error/warning，422 条既有 info。数据库、worker、写队列、日志批处理、装配、缓存和画布 AI 的 160 项测试通过；架构检查器 34 项测试通过，共 194 项离线回归通过。
+- 架构 gate 为 453/453 文件可达，三个新模块无规则发现。全局门禁仍退出 1：与上批日志相比，仅组合根规模下降、显式导入导致部分既有超限文件增加一行以及可达文件数变化，既有债务仍待后续批次解决。
+- Graphify 刷新为 45,622 节点、67,366 边、1,088 个源码文件，已查询三个新模块并用源码校验依赖。启发式图中的语法节点和路径归并不作编译证明；生成图保留本地，不提交。
+- 没有改桌面、schema、API 协议、worker 开关或缓存预算；没有执行真机、服务器或生产验证。上批已确认的主题断言/golden 基线失败不在本批测试范围，也未修改。
+
+本批完成。下一批继续拆分业务 composition 和路由；core 对 feature 的反向依赖、ui_v3 领域边界与大页面仍是未完成事项。当前改动留在 `refactor/mobile-p0-composition` 工作区，尚未提交或推送。
+
+## 2026-10-04：UI 重构前的聊天边界切片 1
+
+用户将重写页面 UI，优先稳定业务状态和操作边界，暂缓旧页面的纯视觉拆分。沿用任务分支，保留上批未提交的装配变更。
+
+本批目标：删除 ChatControllerState 中无生产消费者的旧 `agentToolTrace` 副本及反向 DTO 转换；保留唯一中立 `assistantToolTrace`。提取 Controller 私有运行状态读取租约为纯 Dart 的 ChatAssistantRunReader，Controller 直接消费 AssistantRunSnapshot，删除重复 projection/read 包装。新 reader 只依赖中立 domain port，不引入 API、Riverpod、Flutter、原生或全局装配。
+
+实施前：阅读 ADR-008、异步恢复和长任务导航不变式；Graphify 查询 ChatController，源码核查 state 消费者、read lease、取消调用点、终态回读和失败线程恢复。旧 trace 的生产引用仅为 Controller 内部复制，页面已经消费中立 trace；其他领域的旧 DTO 不在本批删除范围。
+
+不变项：接口请求/解析、认证、服务端字段、错误码、轮询频率、终态策略、scope/generation、后台任务 owner、缓存键和 UI 外观。取消只释放当前读取，不停止服务端任务；不新增兼容导出或迁移别的业务域，不动桌面。
+
+步骤：删除旧 state 字段及消费者 → 提取租约读取 owner → 让轮询直接读取中立 snapshot → 增加并发租约、完成释放、取消异常和重复取消回归 → 全移动静态分析、聊天控制器/任务/UI 回归 → Graphify 与源码复查。
+
+验收：无 agentToolTrace 旧字段；Controller 无 AgentRunToolTrace/AgentRunOutputFile 反向构造；state 无 API import；reader 不依赖实现层；保留线程/Run 绑定校验及原有取消调用点。架构门禁不扩大预算、不新增模块债务。UI、异步行为以离线测试为证，不声明真机或服务端结果。回滚只撤销本切片文件及测试，不撤销上批装配改动。
+
+### 聊天边界切片结果
+
+- 新增 `chat_assistant_run_reader.dart`，只依赖 `assistant_runtime.dart`。它集中管理可取消的 `AssistantRuntimeReadLease`，Controller 的轮询继续负责线程绑定、generation、终态回读和失败投影；释放读取租约不会取消服务端 Run。
+- 删除 `ChatControllerState.agentToolTrace` 及 Controller 内 `AgentRunToolTrace`/`AgentRunOutputFile` 反向构造；生产状态只保留 `AssistantToolTrace`。`chat_run_tracker.dart` 仍保留旧 trace 作为持久化和兼容读取边界，本批没有扩大删除范围。
+- ChatController 从 5,843 行降至 5,761 行。变更前 Graphify 中 ChatController degree 为 409；变更后图刷新为 45,651 节点、67,367 边、1,089 个源码文件。新 reader degree 为 10，仅连接中立 runtime port、lease 集合和生命周期方法；无 API、Riverpod、Flutter、全局组合根或 native import。
+- 完整移动 analyzer 无 error/warning，422 条既有 info；格式、diff check 通过；架构可达性 454/454。架构 gate 仍只报告既有 recording-card、notification、页面债务，没有本切片新增发现。
+- 聊天 Controller 单独回归日志为 `+124 -1`（125 项，124 通过、1 失败）。失败为 `records send/reply times...` 的 fake clock：测试只提供两个 `DateTime`，执行路径额外调用 `_nowUtc` 后在 `removeAt(0)` 越界。组合聊天页面回归还有多项 `pumpAndSettle` 超时和 timer 清理失败；本轮首次报告时尚未隔离验证，后续资产批次已在 HEAD 副本复现同一失败集合。没有通过放宽等待隐藏失败。
+- 未执行真机、服务器或 Provider 联调；未改变请求字段、认证、轮询频率、缓存键、服务端任务生命周期或页面外观。当前改动尚未提交或推送。
+
+下一步：在新 UI 接入前继续把页面轮询移入 feature controller/application owner；随后拆 ChatController 的历史加载、发送 admission、运行进度和缓存持久化职责。旧聊天 page 的布局拆分暂不作为底层架构验收。
+
+### 页面轮询第一处迁移
+
+在同一 UI 准备批次中，将账户页的 30 秒 usage poller 提取为
+`AccountUsageRefreshCoordinator`。它位于 billing application 层，独立持有
+`OrchestratedPoller`、网络资源声明、退避、前台条件和 `AccountUsageController.load()`；
+`V3AccountProfilePage` 只在 route active/inactive/dispose 生命周期调用
+`start/stop/dispose`，不再定义任务 key、间隔、资源或错误判定。初版将任务 owner 改为
+`account-usage`，后续资产批次恢复 `account-usage-page` 以保持指标身份，并修正 Controller
+解析时机，具体见该批结果。
+
+该迁移只改变装配位置，不改变请求、轮询频率、退避、状态判断或 UI。新文件 analyzer
+无 error/warning（2 条新增 const info，后续已修正）；billing/controller 和聊天回归中，
+membership 测试有失败，其基线来源未验证，不声称是既有问题，也不作为本次协调器通过证据。下一处按同样
+方式迁移资产、定位和转写页轮询前，先为 coordinator 增加直接的任务生命周期测试。
+
+## 2026-10-04：UI 重构前的资产轮询边界
+
+目标：只迁移资产实时刷新使用的 `OrchestratedPoller` 装配，不迁移页面仍拥有的
+`AssetsRequestOwner`、刷新合并、缓存失效、请求取消和 UI 状态投影。新增
+`AssetsLiveRefreshCoordinator` 位于 assets application 层，接收抽象的
+`canRun` 与 `refresh` 回调，统一任务 key、owner、网络资源、10 秒间隔、30 秒退避、
+前台条件和 dispose；页面仅在 asset work 变化及 route active/inactive 时控制它。
+
+实施前：Graphify 查询资产页 degree 112，源码核查 live work 监听、route 生命周期、
+request owner 取消和 queued refresh；定位页 degree 48，发现其轮询同时包含 API、ETag、
+ScopedReadCache、account/workspace 校验和 widget setState，因此不与资产批次混拆。
+
+不变项：资产请求参数、缓存 revision/invalidation、并发刷新合并、owner supersede/cancel、
+轮询 key/频率/退避、页面状态和视觉结构。验收为资产页面聚焦测试、assets controller
+测试、analyzer、Graphify/source review；不执行服务端或真机操作。回滚只恢复 poller
+装配和页面导入。
+
+### 资产轮询边界结果
+
+- 新增 `AssetsLiveRefreshCoordinator`，资产页不再直接创建 `OrchestratedPoller`；请求 owner、
+  queued refresh、cache invalidation、supersede/cancel 仍由页面与 `AssetsController` 保持。
+  `AssetsLiveRefreshCoordinator` 只依赖任务调度、活动指标和抽象 refresh/canRun 回调。
+- 修正账户协调器：每次轮询通过 `currentController` 读取当前账户 Controller，账户/工作区
+  切换不会继续使用旧实例；恢复原页面行为的 `account-usage-page` owner 和既有 RFC 标记。
+- 新增 8 项生命周期测试，覆盖账户 Controller 替换、资产 inactive 不读、重复 start 单飞、
+  stop 后迟到完成、前后台暂停恢复以及聊天 reader 租约释放；资产页面、资产 Controller、
+  账户 Controller 与这些协调器共 41 项聚焦测试全部通过。
+- 为资产页面测试显式 override `assetProjectionFreshnessProvider`，隔离设备身份和全局通知投影；
+  这修复的是测试装配缺口，不改变生产逻辑。修复替身前，隔离 HEAD 与工作树聊天/资产失败
+  名称集合一致：28 个失败复现（聊天 24、资产 4）；资产 4 个失败在补齐替身后已消除。
+- 完整 analyzer 无 error/warning，422 条既有 info；架构可达性 456/456。与上批 gate 相比，
+ 仅移除了账户页的旧轮询 RFC 告警并增加两个新源码文件，未新增架构债务。Graphify 刷新为
+ 45,706 节点、67,424 边、1,094 个源码文件；生成图不提交。
+- 未改 UI 布局、路由、请求协议、缓存语义、任务 owner 生命周期之外的业务行为；未执行真机、
+  服务器或 Provider 联调。当前工作区改动仍未提交或推送。
+
+下一步：定位进度页必须先把 `PositioningProgressClient`、ETag、ScopedReadCache 和
+account/workspace scope 校验移到 application/data owner，再让页面只订阅状态；随后处理
+转写和 Work AI 页面轮询。它们仍与 UI 组件替换解耦，但会涉及存储和长任务不变式，单独成批。
+
+## 2026-10-04：定位内容覆盖率边界
+
+目标：将 V3PositioningTaskProgress 的网络、ETag、缓存序列化、账户/工作区校验和轮询
+移入 features/positioning 的 domain/application/data，装配在 app/di。页面只管理展示、
+导航、可见性和已有任务阶段输入；不绑定新 UI 视觉结构。用户已授权继续此类底层解耦。
+
+已读取异步恢复/长任务导航不变式、共享 API PositioningProgressClient/DTO/parser 及现有
+ScopedReadCache。Graphify 复查页面 degree 48；入边/测试使用源码搜索确认。接口仍是原
+workspacePositioningProgress，客户端字段、认证、协议解析和状态语义不变，无服务端操作。
+
+设计：纯 Dart PositioningCoverage + Repository port；RemotePositioningProgressRepository
+保留原缓存 payload、键、TTL、ETag/304、失败传播规则，保存前验证读取仍属于当前 owner。
+PositioningProgressController 使用现有 OrchestratedPoller（3 秒、30 秒退避、15 秒 deadline）
+与可见/任务活动输入。每个页面实例拥有一个 controller，dispose 释放轮询；app/di factory
+捕获创建时 scope 并实时校验，不将 API/数据库/provider 容器放进领域模型。
+
+风险/验收：缓存初始展示 stale；304 无缓存不得成功；last_known_good 始终 stale；失败保留
+旧覆盖率；暂停、结束、切换 scope 或 dispose 后不得保存迟到响应；返回不取消后台任务。
+新增 repository/controller 测试并运行现有定位页面回归、全移动分析和 Graphify/source gate。
+不修改布局、文案、golden、实际任务 owner、请求或缓存格式。回滚仅本批新增边界与页面绑定。
+
+补充验证范围：复查发现上批 AccountUsageRefreshCoordinator 捕获固定 Controller，
+与原页面每轮 ref.read 当前实例不同。本批改为每轮解析当前 Controller，恢复账户替换
+语义，并补账户/资产协调器生命周期测试及 reader 租约测试。先前计划中将聊天/会员
+测试称为“既有失败”尚缺隔离基线证据，本批验证前应视作未归因失败；不得据调用栈
+未经过新代码就判定与重构无关。
+
+### 定位内容覆盖率边界结果
+
+- 新增 `features/positioning/domain/positioning_progress_repository.dart` 的中立 `PositioningCoverage` 与 repository port；新增 `RemotePositioningProgressRepository`，集中处理 `PositioningProgressClient`、ETag/304、`ScopedReadCache` 序列化、last-known-good stale 语义及 scope 所有权检查。
+- 新增 `PositioningProgressController`，集中持有 3 秒轮询、30 秒最大退避、15 秒 deadline、前台/路由/任务活动条件、generation 和 dispose；页面只订阅 coverage、管理展示和导航。
+- 新增 `positioningProgressControllerFactoryProvider`，创建时捕获 account/workspace scope，scope 改变时旧 Controller/请求不能更新新页面或写入新缓存。缓存键和 API endpoint 保持不变。
+- 页面从原先同时依赖 API、数据库、缓存和任务调度，降为 Controller + task state + route lifecycle；页面布局、文案和服务端覆盖率不等同生成耗时的语义未改。
+- 新增 Controller/Repository 测试覆盖缓存 stale、304 无缓存失败、valid/last_known_good、失败保留旧覆盖率、隐藏/终态/scope/background/dispose/15 秒 deadline 的迟到响应丢弃，以及恢复后的新 generation；定位页回归增加 account/workspace 切换验证。相关缓存、页面和 Controller 共 26 项通过。
+- 最终 Graphify：45,761 节点、67,487 边、1,099 个源码文件。页面状态 degree 从 11 降至 5；图中移除了 API、session、缓存和调度 provider 的直连。图未完整提取 DI factory/port 回调边，已用源码、analyzer 和真实 Provider 装配的离线测试补查；没有新增 native 边界。完整移动 analyzer 无 error/warning，422 条既有 info；可达性 460/460。与本批前的 pollers gate 日志比较，只移除了定位页旧轮询 RFC 告警，没有新增架构告警；完整架构 gate 因既有债务仍未通过。
+- 未执行真机、服务器或上游服务联调；未修改服务端字段、认证、轮询配置、后台生成任务生命周期、缓存格式或 UI 视觉结构。读取取消、超时和账户切换后的响应归属检查得到加强。改动仍未提交、未推送。
+
+## 2026-10-04：退役 backend_contracts 聚合包装
+
+目标：保留现有工作区重试行为，将唯一生产用例迁到 workspace feature，删除 backend_contracts 的无消费者包装、模型及专用测试。保持 Page → Controller → Repository → ApiClient；Controller 负责原有命令幂等上下文，Repository 负责 endpoint 与响应解析。页面原有 creating 状态读取、8 次确认循环、导航及 UI 不在此批改动范围。
+
+影响：生产调用为 app_route_screens.dart 的 workspace recovery；另有显式联网 integration probe 调用。迁移 probe 的依赖但不执行它（包含服务端写操作）。确认旧模型名在全工作区无其他消费者后删除；保留共享 EndpointCatalog、manifest、真实领域 client 及静态契约检查工具，不混淆它们与被删除的运行时聚合包装。
+
+协议：读取现有 client、endpoint catalog/manifest 和请求测试；本机未找到后端实现副本，本批不更改请求字段、认证、响应接受规则或同步策略。完整保留 POST /api/v1/workspace/retry-create、空 JSON body、原有 idempotency operation/scene/key 及 ack 解析，包括非法文本过滤。若发现必须改协议，暂停该部分直至取得后端证据。
+
+步骤：依赖核查/Graphify → workspace 边界和 DI → 页面及 integration probe 替换 → 删除旧模块和专用测试 → 请求/解析/失败测试、页面验证、全移动 analyzer、静态契约与架构门禁 → Graphify 复查。回滚仅此切片；保留先前未提交重构和用户 UI 文档；不操作服务器或桌面。
+
+### backend_contracts 迁移结果
+
+- 新增 `features/workspace/domain/workspace_recovery.dart` 和 `features/workspace/data/workspace_recovery_repository.dart`，并通过 `app/di/workspace_providers.dart` 装配。页面和显式 integration probe 均改用 `WorkspaceRecoveryRepository.retryCreate`。
+- 删除 `features/backend_contracts` 的 580 行 API 聚合、283 行历史模型、225 行宽泛兼容测试；删除只扫描历史 backend contract 聚合的 `tool/backend_contract_check.dart` 及其 45 行测试，并从 quality gate 移除重复门禁。保留并验证统一 `api_contract_consistency_check.dart`。
+- 保持 `workspaceRetryCreate`、`POST /api/v1/workspace/retry-create`、空 JSON body、原幂等 operation/scene/key、认证和 ack 解析。新增测试覆盖成功请求和畸形 ack fail-closed；workspace、页面回归共 9 项通过；契约一致性检查为 215 declarations / 0 issues；全移动 analyzer 无 error/warning，422 条既有 info；源码可达性 461/461。
+- Graphify 刷新为 45,673 节点、67,375 边、1,098 个源码文件。`WorkspaceRecoveryRepository` 的生产装配通过源码与测试确认；旧 `BackendContractApi` 源文件和引用均不存在，图中仅残留无 source 的历史 orphan node，不代表当前代码依赖。
+- 未执行真实服务器 probe；integration probe 仅完成代码迁移。改动仍未提交、未推送。
+
+## 2026-10-04：删除 core/api 重复转发入口
+
+目标：删除 `src/lib/core/api` 中只转发 `package:huahuo_api/huahuo_api.dart` 的五个 shim，所有调用方直接依赖共享 API 包；保留 `AppCachePolicy` 与 `ScopedReadCache` 等真实实现。此批只整理依赖入口，不改变请求字段、认证、缓存、重试、上传或 UI 行为。
+
+实施：删除 `api_client.dart`、`api_envelope.dart`、`endpoint_catalog.dart`、`idempotency.dart`、`upload_client.dart`；迁移 180 个原 shim 引用文件（包含 core 内部实现、应用代码和测试）到直接 `huahuo_api` 导入。补齐 `WorkspaceRecoveryRepository` 及其测试的遗漏导入，并保留 document proposal/positioning 的 `hide` 语义。旧 shim 路径在 `src` 中已无引用。
+
+验证：Dart analyzer 无 error/warning（436 条既有 info）；API client、幂等性、workspace recovery 聚焦测试全部通过；API 契约检查为 215 declarations / 0 issues；源码可达性为 456/456；Graphify 刷新为 45,814 节点、67,214 条边、1,093 个源码文件。未执行服务器、真机或桌面工作；未改变 UI 视觉结构。Graphify 图产物不提交，工作区改动仍未提交或推送。

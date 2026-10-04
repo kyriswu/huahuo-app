@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 import 'dart:convert';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../domain/digital_twin_models.dart';
 import '../domain/digital_twin_material.dart';
 import '../domain/document_change_proposal_models.dart';

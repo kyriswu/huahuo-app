@@ -1,8 +1,11 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/di/account_usage_providers.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import '../di/diagnostics_providers.dart';
+import '../di/database_providers.dart';
 import '../di/auth_providers.dart';
 import '../di/native_port_providers.dart';
 import '../../features/ingestion/data/internal_recording_session_store.dart';
@@ -15,22 +18,16 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../core/api/api_client.dart';
 import '../../core/api/scoped_read_cache.dart';
-import '../../core/api/upload_client.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/database/app_database.dart';
-import '../../core/database/app_preferences_dao.dart';
 import '../../core/database/creation_canvas_history_dao.dart';
 import '../../core/database/creation_canvas_draft_dao.dart';
-import '../../core/database/diagnostic_log_dao.dart';
 import '../../core/database/profile_workspace_dao.dart';
 import '../../core/database/recording_dao.dart';
 import '../../core/database/user_metadata_dao.dart';
 import '../../core/database/v3_deposit_dao.dart';
 import '../../core/device/device_identity_store.dart';
-import '../../core/diagnostics/diagnostic_export_service.dart';
-import '../../core/diagnostics/diagnostic_logger.dart';
 import '../../core/native/native_playback_port.dart';
 import '../../core/native/recording_card_native_port.dart';
 import '../../core/native/voice_recorder_port.dart';
@@ -39,16 +36,13 @@ import '../../core/storage/private_media_path_resolver.dart';
 import '../../core/storage/private_recording_path_resolver.dart';
 import '../../core/storage/upload_draft_store.dart';
 import '../../shared/ui_v3/v3_brand_mark.dart';
-import '../../features/backend_contracts/data/backend_contract_api.dart';
 import '../../features/billing/data/account_usage_repository.dart';
 import '../../features/book_work/application/mobile_book_work_controller.dart';
 import '../../features/book_work/data/mobile_book_work_port.dart';
 import '../../features/chat/data/chat_thread_alias_repository.dart';
 import '../../features/chat/application/chat_run_tracker.dart';
-import '../../features/chat/data/chat_api.dart';
 import '../../features/chat/data/remote_project_assistant_runtime.dart';
 import '../../features/chat/domain/assistant_runtime.dart';
-import '../../features/chat/data/authenticated_resource_image_cache.dart';
 import '../../features/notifications/data/notification_api.dart';
 import '../../features/notifications/application/notification_controller.dart';
 import '../../features/notifications/application/push_navigation_controller.dart';
@@ -137,7 +131,6 @@ import '../../features/ui_v3/data/automatic_outline_recovery_store.dart';
 import '../../features/ui_v3/data/note_file_agent_client.dart';
 import '../../features/ui_v3/data/note_metrics_repository.dart';
 import '../lifecycle/app_activity_coordinator.dart';
-import '../runtime/database_worker_runtime.dart';
 import '../runtime/runtime_provider_module.dart';
 import '../../features/ui_v3/data/workspace_content_sync.dart';
 import '../../features/ui_v3/data/workspace_content_sync_store.dart';
@@ -171,11 +164,6 @@ final dailyTopicControllerProvider =
       return controller;
     });
 
-// resident-provider: Shares one backend contract api dependency for the full account session.
-final backendContractApiProvider = Provider<BackendContractApiPort>((ref) {
-  return BackendContractApi(apiClient: ref.watch(apiClientProvider));
-});
-
 // resident-provider: Shares one miro fish graph api dependency for the full account session.
 final miroFishGraphApiProvider = Provider<MiroFishGraphApiPort>((ref) {
   return MiroFishGraphApi(apiClient: ref.watch(apiClientProvider));
@@ -198,66 +186,6 @@ String? resolveRuntimeGraphId({
   final sessionValue = sessionWorkspaceId?.trim();
   return sessionValue == null || sessionValue.isEmpty ? null : sessionValue;
 }
-
-// resident-provider: Shares one account-scoped local database snapshot store identity across dependent controllers.
-final localDatabaseSnapshotStoreProvider =
-    Provider<LocalDatabaseSnapshotStore?>((ref) {
-      return null;
-    });
-
-// resident-provider: Preserves the app database dependency identity across route changes.
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  final runtime = ref.watch(databaseWorkerRuntimeProvider);
-  final useWorker = runtime.configured;
-  return AppDatabase(
-    snapshotStore: ref.watch(localDatabaseSnapshotStoreProvider),
-    metrics: ref.watch(databaseMetricsProvider),
-    writeWorker: useWorker ? runtime : null,
-    writeQueue: useWorker ? runtime.writeQueue : null,
-  );
-});
-
-// resident-provider: Preserves the database worker runtime dependency identity across route changes.
-final databaseWorkerRuntimeProvider = Provider<DatabaseWorkerRuntime>((ref) {
-  final runtime = DatabaseWorkerRuntime(
-    snapshotStore: ref.watch(localDatabaseSnapshotStoreProvider),
-    enabled: ref.watch(
-      performanceFeatureFlagsProvider.select(
-        (flags) => flags.databaseWorkerEnabled,
-      ),
-    ),
-    metrics: ref.watch(databaseMetricsProvider),
-  );
-  ref.onDispose(() {
-    unawaited(() async {
-      try {
-        await runtime.dispose();
-      } catch (error, stackTrace) {
-        FlutterError.reportError(
-          FlutterErrorDetails(
-            exception: error,
-            stack: stackTrace,
-            library: 'huahuo database runtime',
-            context: ErrorDescription(
-              'while disposing the database worker runtime',
-            ),
-          ),
-        );
-      }
-    }());
-  });
-  return runtime;
-});
-
-// resident-provider: Shares one account-scoped app preferences dao identity across dependent controllers.
-final appPreferencesDaoProvider = Provider<AppPreferencesDao>((ref) {
-  final runtime = ref.watch(databaseWorkerRuntimeProvider);
-  return AppPreferencesDao(
-    ref.watch(appDatabaseProvider),
-    worker: runtime,
-    writeQueue: runtime.writeQueue,
-  );
-});
 
 // resident-provider: Retains only successfully committed automatic-Outline journals across scoped coordinator rebuilds.
 final automaticOutlineRecoveryStoreRegistryProvider =
@@ -869,22 +797,6 @@ final notificationControllerProvider =
         cacheTtlResolver: () => ref.read(appCachePolicyProvider).cacheTtl,
       );
     });
-
-// resident-provider: Shares one account-scoped resource image cache identity across dependent controllers.
-final resourceImageCacheProvider = Provider<AuthenticatedResourceImageCache>((
-  ref,
-) {
-  final workspaceId = ref.watch(
-    sessionStoreProvider.select((store) => store.state.workspace?.workspaceId),
-  );
-  final cache = AuthenticatedResourceImageCache(
-    playbackClient: ChatImagePlaybackClient(ref.watch(apiClientProvider)),
-    userScope: ref.watch(authenticatedUserDataScopeProvider),
-    workspaceScope: workspaceId ?? 'workspace-unavailable',
-  );
-  ref.onDispose(cache.dispose);
-  return cache;
-});
 
 // resident-provider: Preserves the chat run tracker dependency identity across route changes.
 final chatRunTrackerProvider = ChangeNotifierProvider<ChatRunTracker>((ref) {
@@ -2131,62 +2043,6 @@ final noteAppendControllerProvider =
         port: ref.watch(noteAppendPortProvider),
       );
     });
-
-// resident-provider: Shares one account-scoped diagnostic log dao identity across dependent controllers.
-final diagnosticLogDaoProvider = Provider<DiagnosticLogDao>((ref) {
-  final runtime = ref.watch(databaseWorkerRuntimeProvider);
-  return DiagnosticLogDao(
-    ref.watch(appDatabaseProvider),
-    worker: runtime,
-    writeQueue: runtime.writeQueue,
-  );
-});
-
-// resident-provider: Preserves the diagnostic logger dependency identity across route changes.
-final diagnosticLoggerProvider = Provider<DiagnosticLogger>((ref) {
-  final activity = ref.watch(appActivityCoordinatorProvider.notifier);
-  final logger = DiagnosticLogger(
-    dao: ref.watch(diagnosticLogDaoProvider),
-    flushInterval: const Duration(seconds: 1),
-    canDeferFlush: () => activity.state.isForeground,
-  );
-  ref.listen<bool>(
-    appActivityCoordinatorProvider.select(
-      (coordinator) => coordinator.state.isForeground,
-    ),
-    (_, foreground) {
-      if (foreground) return;
-      try {
-        logger.flush();
-      } catch (_) {}
-    },
-  );
-  ref.onDispose(logger.dispose);
-  return logger;
-});
-
-// resident-provider: Shares one diagnostic export service dependency for the full account session.
-final diagnosticExportServiceProvider = Provider<DiagnosticExportService>((
-  ref,
-) {
-  return DiagnosticExportService(
-    dao: ref.watch(diagnosticLogDaoProvider),
-    performanceSnapshot: () {
-      final compressed = ref.read(resourceImageCacheProvider);
-      return ref
-          .read(appPerformanceRuntimeProvider)
-          .capture(
-            compressedImageCache: <String, Object?>{
-              'available': true,
-              'currentEntries': compressed.memoryEntryCount,
-              'currentBytes': compressed.memoryBytes,
-              'maximumBytes': compressed.memoryLimitBytes,
-              'diskMaximumBytes': compressed.diskLimitBytes,
-            },
-          );
-    },
-  );
-});
 
 class AppProviders extends StatelessWidget {
   const AppProviders({

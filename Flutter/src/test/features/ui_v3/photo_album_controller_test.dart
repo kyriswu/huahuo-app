@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
@@ -8,8 +9,6 @@ import 'package:huahuoai_app/core/native/native_file_port.dart';
 import 'package:huahuoai_app/features/ui_v3/application/photo_album_controller.dart';
 import 'package:huahuoai_app/features/ui_v3/data/photo_album_repository.dart';
 import 'package:huahuoai_app/features/ui_v3/domain/photo_album_models.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 
 void main() {
   late Directory temporary;

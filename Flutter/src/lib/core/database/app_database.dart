@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../performance/database_metrics.dart';
 import 'database_write_queue.dart';
 

@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/app/bootstrap/app_bootstrap_controller.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/features/auth/data/auth_api.dart';

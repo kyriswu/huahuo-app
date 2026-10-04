@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/native/native_file_port.dart';
 import 'package:huahuoai_app/core/storage/file_storage_port.dart';

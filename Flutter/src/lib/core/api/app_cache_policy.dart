@@ -1,4 +1,4 @@
-import 'api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 /// Runtime-only freshness policy sourced from the public App configuration.
 ///

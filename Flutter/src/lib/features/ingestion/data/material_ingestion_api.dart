@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_initializing_formals
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../ui_v3/data/note_file_agent_client.dart';
 import '../domain/material_ingestion.dart';
 

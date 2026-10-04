@@ -148,10 +148,6 @@ List<_GateStep> _steps(
     _GateStep('analyze huahuo_product', 'dart', const <String>[
       'analyze',
     ], workingDirectory: productRoot),
-    const _GateStep('backend contracts', 'dart', <String>[
-      'run',
-      'tool/backend_contract_check.dart',
-    ]),
     const _GateStep('API contract consistency', 'dart', <String>[
       'run',
       'tool/api_contract_consistency_check.dart',

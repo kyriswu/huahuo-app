@@ -1,3 +1,4 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/di/native_port_providers.dart';
 import 'package:huahuoai_app/shared/markdown/v3_markdown.dart';
 import 'dart:async';
@@ -9,8 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/di/chat_providers.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/database/user_metadata_dao.dart';

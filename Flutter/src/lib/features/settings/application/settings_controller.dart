@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_envelope.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/diagnostic_log_dao.dart';
 import '../../../core/diagnostics/diagnostic_export_service.dart';

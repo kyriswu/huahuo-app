@@ -1,4 +1,4 @@
-import '../../../core/api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../domain/assistant_runtime.dart';
 import '../domain/chat_models.dart';
 
@@ -9,13 +9,12 @@ final class UnavailableAssistantRuntime implements AssistantRuntimePort {
   @override
   Future<AssistantRuntimeRead<AssistantRunSnapshot>> readRun({
     required AssistantRunHandle handle,
-  }) =>
-      Future<AssistantRuntimeRead<AssistantRunSnapshot>>.value(
-        const AssistantRuntimeRead<AssistantRunSnapshot>.failure(
-          'ASSISTANT_RUNTIME_UNAVAILABLE',
-          outcomeUnknown: true,
-        ),
-      );
+  }) => Future<AssistantRuntimeRead<AssistantRunSnapshot>>.value(
+    const AssistantRuntimeRead<AssistantRunSnapshot>.failure(
+      'ASSISTANT_RUNTIME_UNAVAILABLE',
+      outcomeUnknown: true,
+    ),
+  );
 }
 
 /// Maps the current project chat/agent API into the provider-neutral runtime

@@ -1,4 +1,4 @@
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'chat_turn_state_machine.dart';
 import '../domain/assistant_runtime.dart';
 import '../domain/chat_models.dart';
@@ -16,7 +16,6 @@ final class ChatControllerState {
     this.nextAction = const ChatNextAction.none(),
     this.agentRunStatus,
     this.assistantToolTrace = const <AssistantToolTrace>[],
-    this.agentToolTrace = const <AgentRunToolTrace>[],
     this.turnState = const ChatTurnState.settled(),
     this.lastErrorCode,
   });
@@ -39,8 +38,6 @@ final class ChatControllerState {
   final ChatNextAction nextAction;
   final String? agentRunStatus;
   final List<AssistantToolTrace> assistantToolTrace;
-  @Deprecated('Use assistantToolTrace.')
-  final List<AgentRunToolTrace> agentToolTrace;
   final ChatTurnState turnState;
   final String? lastErrorCode;
 
@@ -63,7 +60,6 @@ final class ChatControllerState {
     ChatNextAction? nextAction,
     String? agentRunStatus,
     List<AssistantToolTrace>? assistantToolTrace,
-    List<AgentRunToolTrace>? agentToolTrace,
     bool clearAgentActivity = false,
     ChatTurnState? turnState,
     String? lastErrorCode,
@@ -86,11 +82,6 @@ final class ChatControllerState {
         clearAgentActivity
             ? const <AssistantToolTrace>[]
             : assistantToolTrace ?? this.assistantToolTrace,
-      ),
-      agentToolTrace: List<AgentRunToolTrace>.unmodifiable(
-        clearAgentActivity
-            ? const <AgentRunToolTrace>[]
-            : agentToolTrace ?? this.agentToolTrace,
       ),
       turnState: turnState ?? this.turnState,
       lastErrorCode: clearError ? null : lastErrorCode ?? this.lastErrorCode,

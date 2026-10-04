@@ -1,3 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,9 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/lifecycle/app_activity_coordinator.dart';
 import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/api/scoped_read_cache.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
@@ -32,6 +31,77 @@ void main() {
     workspaceId: 'progress-workspace',
     agentRunId: 'agent_run_progress',
   );
+
+  for (final change in ['account', 'workspace']) {
+    testWidgets(
+      '$change switch replaces coverage and rejects the old response',
+      (tester) async {
+        final fixture = await _fixture();
+        fixture.cachePositioningProgress(_rawPositioningProgress);
+        final transport = fixture.apiClient.transport as _NotModifiedTransport;
+        final oldResponse = Completer<ApiTransportResponse>();
+        transport.nextResponse = oldResponse.future;
+        final router = _router();
+        addTearDown(router.dispose);
+        addTearDown(fixture.dispose);
+        await tester.pumpWidget(_app(router, fixture, taskState: runningTask));
+        await tester.pump();
+        expect(find.text('定位内容覆盖度 50%'), findsOneWidget);
+        expect(transport.sendCalls, 1);
+
+        final user = change == 'account' ? 'next-user' : 'progress-page-user';
+        final workspace = change == 'workspace'
+            ? 'next-workspace'
+            : 'progress-workspace';
+        fixture.cachePositioningProgress(
+          {..._rawPositioningProgress, 'completedPercent': 70},
+          userScope: user,
+          workspaceId: workspace,
+        );
+        transport.nextResponse = null;
+        fixture.session.refreshUserStatus(
+          status: SessionUserStatus(
+            user: SessionUser(userId: user, maskedPhoneNumber: '138****9000'),
+            workspace: SessionWorkspace(
+              status: SessionWorkspaceStatus.ready,
+              workspaceId: workspace,
+            ),
+            onboardingRequired: true,
+          ),
+          updatedAt: DateTime.utc(2026, 10, 4),
+        );
+        await tester.pumpWidget(_app(router, fixture, taskState: runningTask));
+        await tester.pump();
+        expect(find.text('定位内容覆盖度 70%'), findsOneWidget);
+        expect(transport.sendCalls, 2);
+
+        final latePayload = {
+          ..._rawPositioningProgress,
+          'completedPercent': 90,
+        };
+        oldResponse.complete(
+          ApiTransportResponse(
+            status: 200,
+            headers: const {'ETag': 'late'},
+            body: {'success': true, 'data': latePayload},
+          ),
+        );
+        await tester.pump();
+        expect(find.text('定位内容覆盖度 70%'), findsOneWidget);
+        for (final scope in [
+          ('progress-page-user', 'progress-workspace'),
+          (user, workspace),
+        ]) {
+          final entry = ScopedReadCache(
+            dao: fixture.preferences,
+            userScope: scope.$1,
+            workspaceScope: scope.$2,
+          ).read('workspacePositioningProgress', scope.$2);
+          expect(entry?.etag, 'progress-etag');
+        }
+      },
+    );
+  }
 
   testWidgets('unquantified work never invents a percentage', (tester) async {
     final fixture = await _fixture();
@@ -188,9 +258,6 @@ Widget _app(
   return ProviderScope(
     overrides: <Override>[
       sessionStoreProvider.overrideWith((ref) => fixture.session),
-      authenticatedUserDataScopeProvider.overrideWithValue(
-        'progress-page-user',
-      ),
       onboardingContinuationControllerProvider.overrideWith(
         (ref) => fixture.continuation,
       ),
@@ -315,7 +382,7 @@ Future<_Fixture> _fixture({
     coordinator: coordinator,
     taskTracker: taskTracker,
     preferences: preferences,
-    apiClient: _notModifiedApiClient(),
+    apiClient: _notModifiedApiClient(session),
   );
 }
 
@@ -336,14 +403,18 @@ final class _Fixture {
   final AppPreferencesDao preferences;
   final ApiClient apiClient;
 
-  void cachePositioningProgress(Map<String, Object?> payload) {
+  void cachePositioningProgress(
+    Map<String, Object?> payload, {
+    String userScope = 'progress-page-user',
+    String workspaceId = 'progress-workspace',
+  }) {
     ScopedReadCache(
       dao: preferences,
-      userScope: 'progress-page-user',
-      workspaceScope: 'progress-workspace',
+      userScope: userScope,
+      workspaceScope: workspaceId,
     ).write(
       'workspacePositioningProgress',
-      'progress-workspace',
+      workspaceId,
       etag: 'progress-etag',
       payload: payload,
     );
@@ -369,24 +440,26 @@ final class _TokenDriver implements SecureTokenDriver {
   }) async => true;
 }
 
-ApiClient _notModifiedApiClient() => ApiClient(
+ApiClient _notModifiedApiClient(SessionStore session) => ApiClient(
   config: ApiClientConfig(
     baseUrl: Uri.parse('https://api.example.test'),
     clientVersion: 'test',
     deviceId: 'device-1',
     platform: 'test',
     locale: 'zh-CN',
-    getAccessToken: () async => 'access-token',
+    getAccessToken: () async => 'access-${session.state.user?.userId}',
   ),
   transport: _NotModifiedTransport(),
 );
 
 final class _NotModifiedTransport implements ApiTransport {
   int sendCalls = 0;
+  Future<ApiTransportResponse>? nextResponse;
 
   @override
   Future<ApiTransportResponse> send(ApiTransportRequest request) async {
     sendCalls += 1;
+    if (nextResponse case final response?) return response;
     return const ApiTransportResponse(status: 304, body: null);
   }
 }

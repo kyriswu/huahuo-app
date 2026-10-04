@@ -7,7 +7,8 @@ import '../../features/billing/data/android_payment_port.dart';
 import '../../features/billing/data/billing_api.dart';
 import '../../features/billing/data/billing_pending_order_store.dart';
 import '../../features/billing/data/ios_store_purchase_port.dart';
-import '../bootstrap/app_providers.dart';
+import '../bootstrap/core_provider_module.dart';
+import 'database_providers.dart';
 
 // resident-provider: Shares one billing api dependency for the full account session.
 final billingApiProvider = Provider<BillingApiPort>((ref) {

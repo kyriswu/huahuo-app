@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/ui_v3/data/digital_twin_api.dart';
 import 'package:huahuoai_app/features/ui_v3/data/document_change_proposal_api.dart';
 import 'package:huahuoai_app/features/ui_v3/domain/digital_twin_material.dart';

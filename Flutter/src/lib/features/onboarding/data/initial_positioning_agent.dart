@@ -1,5 +1,4 @@
-import '../../../core/api/api_client.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../chat/domain/chat_repository.dart';
 import '../../chat/data/chat_thread_alias_repository.dart';
 import '../../chat/domain/assistant_runtime.dart';

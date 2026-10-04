@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../app/runtime/runtime_provider_module.dart';
-import '../../../core/api/api_envelope.dart';
 import '../../../core/performance/runtime_activity_metrics.dart';
 import '../../../core/tasking/orchestrated_poller.dart';
 import '../../../core/tasking/task_orchestrator.dart';

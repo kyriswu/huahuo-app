@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuo_api/huahuo_api.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/di/chat_providers.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';

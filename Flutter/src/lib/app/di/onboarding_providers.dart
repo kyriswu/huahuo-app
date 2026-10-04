@@ -1,6 +1,8 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/api/api_client.dart';
+import 'database_providers.dart';
+import 'diagnostics_providers.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/database/diagnostic_log_dao.dart';
 import '../../core/diagnostics/diagnostic_logger.dart';
@@ -180,7 +182,7 @@ final initialPositioningTaskCoordinatorProvider =
           positioningLifecycleCoordinatorProvider.notifier,
         ),
         verifyRunWorkspace: (runId, workspaceId) async {
-            final response = await ref
+          final response = await ref
               .read(assistantRuntimeProvider)
               .readRun(handle: AssistantRunHandle(runId));
           return response.ok &&

@@ -1,3 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
+import 'package:huahuoai_app/app/di/media_cache_providers.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -13,7 +15,6 @@ import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
 import 'package:huahuoai_app/app/navigation/app_route_paths.dart';
 import 'package:huahuoai_app/app/navigation/app_routes.dart';
 import 'package:huahuoai_app/app/navigation/route_parameter_parser.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/native/native_file_port.dart';

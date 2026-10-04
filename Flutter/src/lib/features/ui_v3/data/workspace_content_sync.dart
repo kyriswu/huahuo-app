@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../application/knowledge_note_port.dart';
 import '../application/knowledge_note_sync_service.dart';
 import '../domain/feed_item_models.dart';

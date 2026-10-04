@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:huahuo_api/huahuo_api.dart';
 
-import '../../../core/api/api_client.dart';
 import '../../../core/database/app_preferences_dao.dart';
 import '../domain/deep_positioning_models.dart';
 import '../domain/positioning_lifecycle.dart';

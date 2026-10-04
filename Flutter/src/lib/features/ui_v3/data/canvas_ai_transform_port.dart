@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/di/diagnostics_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/database/diagnostic_log_dao.dart';
 import '../../../core/diagnostics/diagnostic_logger.dart';
 import '../../agent/application/mobile_agent_capability_controller.dart';

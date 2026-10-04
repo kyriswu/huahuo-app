@@ -1,6 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../../core/api/api_client.dart';
 
 enum MobileBookWorkResultStatus { success, unavailable, failure }
 

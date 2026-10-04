@@ -1,4 +1,4 @@
-import '../../../core/api/api_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 Map<String, Object?> runtimeInvocationPayload(
   SharedThreadRuntimeInvocation invocation,

@@ -1,3 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
+import 'package:huahuoai_app/app/di/media_cache_providers.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -7,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/chat/data/authenticated_resource_image_cache.dart';
 import 'package:huahuoai_app/features/chat/data/chat_api.dart';
 import 'package:huahuoai_app/features/ui_v3/application/knowledge_library_controller.dart';

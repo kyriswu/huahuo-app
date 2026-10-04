@@ -2,13 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
-import '../../../core/api/upload_client.dart';
 import '../../../core/native/document_import_format.dart';
 import '../../../core/native/native_file_port.dart';
 import '../data/v3_document_import_store.dart';

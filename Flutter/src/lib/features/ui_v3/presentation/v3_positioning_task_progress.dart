@@ -3,15 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:huahuo_api/huahuo_api.dart';
 
 import '../../../app/di/onboarding_providers.dart';
-import '../../../app/bootstrap/app_providers.dart';
+import '../../../app/di/positioning_progress_providers.dart';
+import '../../positioning/application/positioning_progress_controller.dart';
 import '../../../app/navigation/app_route_observer.dart';
-import '../../../app/runtime/runtime_provider_module.dart';
-import '../../../core/api/scoped_read_cache.dart';
-import '../../../core/tasking/orchestrated_poller.dart';
-import '../../../core/tasking/task_orchestrator.dart';
 import '../../../shared/theme/huahuo_v3_theme.dart';
 import '../../../shared/ui_v3/v3_long_running_task_notice.dart';
 import '../../onboarding/application/initial_positioning_task_coordinator.dart';
@@ -34,70 +30,37 @@ class V3PositioningTaskProgress extends ConsumerStatefulWidget {
 class _V3PositioningTaskProgressState
     extends ConsumerState<V3PositioningTaskProgress>
     with AppActivityRouteAware<V3PositioningTaskProgress> {
-  late final String _userScope;
-  late final String? _workspaceId;
-  late final OrchestratedPoller _poller;
-  ScopedReadCache? _cache;
-  WorkspacePositioningProgress? _progress;
-  String? _etag;
-  bool _stale = false;
-  bool _loading = false;
+  late PositioningProgressController _controller;
+  late final ProviderSubscription<PositioningProgressController Function()>
+  _factorySubscription;
 
-  bool get _canPoll =>
-      activityRouteCanRun &&
+  bool get _taskActive =>
       !widget.task.isTerminal &&
       widget.task.status != InitialPositioningTaskStatus.idle &&
-      widget.task.status != InitialPositioningTaskStatus.registering &&
-      _workspaceId != null &&
-      _userScope != 'anonymous';
+      widget.task.status != InitialPositioningTaskStatus.registering;
 
   @override
   void initState() {
     super.initState();
-    _userScope = ref.read(authenticatedUserDataScopeProvider);
-    _workspaceId = ref.read(sessionStoreProvider).state.workspace?.workspaceId;
-    if (_workspaceId != null && _userScope != 'anonymous') {
-      _cache = ScopedReadCache(
-        dao: ref.read(appPreferencesDaoProvider),
-        userScope: _userScope,
-        workspaceScope: _workspaceId,
-        fallbackTtl: ref.read(appCachePolicyProvider).cacheTtl,
-      );
-      final cached = _cache?.readFallback(
-        'workspacePositioningProgress',
-        _workspaceId,
-      );
-      if (cached != null) {
-        _progress = parseWorkspacePositioningProgress(cached.payload);
-        if (_progress != null) {
-          _etag = cached.etag;
-          _stale = true;
-        }
-      }
-    }
-    _poller = OrchestratedPoller(
-      orchestrator: ref.read(taskOrchestratorProvider),
-      spec: TaskSpec(
-        key: 'positioning:progress:$_userScope:$_workspaceId',
-        owner: 'positioning-report-progress',
-        priority: TaskPriority.userVisible,
-        resources: const <TaskResource>{TaskResource.network},
-        foregroundOnly: true,
-        replaceExisting: true,
-        retryable: true,
-        deadline: const Duration(seconds: 15),
-      ),
-      interval: const Duration(seconds: 3),
-      maxBackoff: const Duration(seconds: 30),
-      activityMetrics: ref.read(runtimeActivityMetricsProvider),
-      poll: (token) async {
-        await _read(token);
-        return _canPoll;
+    _controller = ref.read(positioningProgressControllerFactoryProvider)()
+      ..addListener(_onProgressChanged);
+    _factorySubscription = ref.listenManual(
+      positioningProgressControllerFactoryProvider,
+      (_, factory) {
+        _controller.removeListener(_onProgressChanged);
+        _controller.dispose();
+        _controller = factory()..addListener(_onProgressChanged);
+        _syncPolling();
+        _onProgressChanged();
       },
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _syncPolling();
     });
+  }
+
+  void _onProgressChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
@@ -110,64 +73,18 @@ class _V3PositioningTaskProgressState
   void onActivityRouteBecameActive() => _syncPolling();
 
   @override
-  void onActivityRouteBecameInactive() => _poller.stop();
+  void onActivityRouteBecameInactive() => _syncPolling();
 
-  void _syncPolling() {
-    if (_canPoll) {
-      _poller.start();
-    } else {
-      _poller.stop();
-    }
-  }
-
-  Future<void> _read(AppTaskCancellationToken token) async {
-    if (!_canPoll || _loading) return;
-    _loading = true;
-    try {
-      final response = await PositioningProgressClient(
-        ref.read(apiClientProvider),
-      ).read(workspaceId: _workspaceId!, ifNoneMatch: _etag);
-      token.throwIfCancelled();
-      if (!_canPoll ||
-          ref.read(authenticatedUserDataScopeProvider) != _userScope ||
-          ref.read(sessionStoreProvider).state.workspace?.workspaceId !=
-              _workspaceId) {
-        return;
-      }
-      if (response.isNotModified && _progress != null) {
-        setState(
-          () => _stale = _progress!.validationStatus == 'last_known_good',
-        );
-        return;
-      }
-      if (!response.ok || response.data == null) {
-        throw StateError('POSITIONING_PROGRESS_UNAVAILABLE');
-      }
-      final progress = response.data!;
-      _cache?.write(
-        'workspacePositioningProgress',
-        _workspaceId,
-        etag: response.etag,
-        payload: _progressPayload(progress),
-      );
-      setState(() {
-        _progress = progress;
-        _etag = response.etag;
-        _stale = progress.validationStatus == 'last_known_good';
-      });
-    } on AppTaskCancelledException {
-      rethrow;
-    } catch (_) {
-      if (mounted) setState(() => _stale = true);
-      rethrow;
-    } finally {
-      _loading = false;
-    }
-  }
+  void _syncPolling() => _controller.setActivity(
+    visible: activityRouteCanRun,
+    taskActive: _taskActive,
+  );
 
   @override
   void dispose() {
-    _poller.dispose();
+    _factorySubscription.close();
+    _controller.removeListener(_onProgressChanged);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -233,14 +150,16 @@ class _V3PositioningTaskProgressState
                 : '可以离开此页，完成后会在消息提醒中通知你。',
             style: TextStyle(color: colors.muted, height: 1.5),
           ),
-        if (_progress case final progress?) ...[
+        if (_controller.coverage case final progress?) ...[
           const SizedBox(height: 14),
           _CoverageBar(label: '基础信息完整度', percent: progress.coldStartPercent),
           const SizedBox(height: 12),
           _CoverageBar(label: '定位内容覆盖度', percent: progress.completedPercent),
           const SizedBox(height: 8),
           Text(
-            _stale ? '以上为最近一次已确认的数据，正在等待服务端更新。' : '完整度来自服务端已写入资料，不代表本次生成耗时进度。',
+            progress.isStale
+                ? '以上为最近一次已确认的数据，正在等待服务端更新。'
+                : '完整度来自服务端已写入资料，不代表本次生成耗时进度。',
             style: TextStyle(color: colors.muted, fontSize: 12),
           ),
         ] else if (active) ...[
@@ -263,8 +182,7 @@ class _V3PositioningTaskProgressState
                               .read(initialPositioningTaskCoordinatorProvider)
                               .refresh(),
                     );
-                    _poller.stop();
-                    _syncPolling();
+                    _controller.refresh();
                   },
             child: Text(
               failed
@@ -302,37 +220,3 @@ class _CoverageBar extends StatelessWidget {
     ],
   );
 }
-
-Map<String, Object?> _progressPayload(WorkspacePositioningProgress progress) =>
-    {
-      'schemaVersion': progress.schemaVersion,
-      'source': progress.source,
-      'available': true,
-      'projectionVersion': progress.projectionVersion,
-      'status': progress.status,
-      'validationStatus': progress.validationStatus,
-      'completedPercent': progress.completedPercent,
-      'coldStartPercent': progress.coldStartPercent,
-      'coldStartCompleted': progress.coldStartCompleted,
-      'modules': [
-        for (final module in progress.modules)
-          {
-            'id': module.id,
-            'label': module.label,
-            'weight': module.weight,
-            'score': module.score,
-            'state': module.state,
-            'summary': module.summary,
-          },
-      ],
-      'nextFocus': [
-        for (final focus in progress.nextFocus)
-          {
-            'title': focus.title,
-            'detail': focus.detail,
-            'moduleId': focus.moduleId,
-          },
-      ],
-      'updatedFiles': progress.updatedFiles,
-      'lastUpdated': progress.lastUpdated?.toUtc().toIso8601String(),
-    };

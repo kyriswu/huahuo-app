@@ -102,7 +102,9 @@ void main() {
     expect(steps, contains(startsWith('analyze huahuo_product:')));
     expect(
       steps,
-      contains('backend contracts:dart run tool/backend_contract_check.dart'),
+      contains(
+        'API contract consistency:dart run tool/api_contract_consistency_check.dart',
+      ),
     );
     expect(
       steps,

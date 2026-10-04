@@ -1,6 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../core/api/api_client.dart';
 import '../application/profile_capability_controller.dart';
 import '../domain/profile_capability_models.dart';
 

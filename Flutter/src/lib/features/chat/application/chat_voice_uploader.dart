@@ -1,5 +1,4 @@
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/upload_client.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import '../../../core/native/voice_recorder_port.dart';
 
 final class ChatVoiceUploadResult<T> {

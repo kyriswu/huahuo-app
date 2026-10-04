@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_envelope.dart';
 import '../../../core/auth/session_store.dart';
 import '../../chat/application/chat_run_tracker.dart';
 import '../../chat/domain/chat_models.dart';

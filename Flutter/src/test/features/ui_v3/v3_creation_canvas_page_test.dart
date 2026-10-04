@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -16,8 +17,6 @@ import 'package:huahuoai_app/app/di/chat_providers.dart';
 import 'package:huahuoai_app/app/lifecycle/app_activity_coordinator.dart';
 import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
 import 'package:huahuoai_app/app/navigation/app_routes.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/database/creation_canvas_draft_dao.dart';

@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
 import '../data/notification_api.dart';
 import '../domain/notification_models.dart';
 

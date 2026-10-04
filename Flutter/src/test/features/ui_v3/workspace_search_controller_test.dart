@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/ui_v3/application/knowledge_library_controller.dart';
 import 'package:huahuoai_app/features/ui_v3/application/workspace_search_controller.dart';
 import 'package:huahuoai_app/features/ui_v3/domain/feed_item_models.dart';

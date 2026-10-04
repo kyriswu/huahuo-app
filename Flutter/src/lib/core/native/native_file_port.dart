@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'document_import_format.dart';
 
 final class PickedAudioFile {

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../api/api_envelope.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 
 final class AuthTokens {
   const AuthTokens({required this.accessToken, required this.refreshToken});

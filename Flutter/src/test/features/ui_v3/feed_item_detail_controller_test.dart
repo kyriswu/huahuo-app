@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/lifecycle/app_activity_coordinator.dart';
 import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/features/chat/application/chat_run_tracker.dart';
 import 'package:huahuoai_app/features/recordings/application/recording_batch_transcription_controller.dart';
 import 'package:huahuoai_app/features/recordings/application/recording_processing_tracker.dart';

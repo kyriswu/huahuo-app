@@ -1,5 +1,4 @@
-import '../../../core/api/api_envelope.dart';
-import '../../../core/api/idempotency.dart';
+import 'package:huahuo_api/huahuo_api.dart';
 import 'chat_context.dart';
 import 'chat_models.dart';
 

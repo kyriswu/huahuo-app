@@ -167,6 +167,7 @@ final class AssistantRunSnapshot {
 
   final AssistantRunHandle handle;
   final AssistantRunStatus status;
+
   /// Optional tenant scope returned by adapters that can prove workspace
   /// ownership. It is never inferred from a provider run identifier.
   final String? workspaceId;

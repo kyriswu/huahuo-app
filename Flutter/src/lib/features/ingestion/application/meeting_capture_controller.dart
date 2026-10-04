@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/di/diagnostics_providers.dart';
+import '../../../app/di/database_providers.dart';
 import '../../../app/bootstrap/app_providers.dart';
 import '../../../core/database/diagnostic_log_dao.dart';
 import '../../../core/diagnostics/diagnostic_logger.dart';

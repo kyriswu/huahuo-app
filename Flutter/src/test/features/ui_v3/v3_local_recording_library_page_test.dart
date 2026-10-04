@@ -1,3 +1,5 @@
+import 'package:huahuo_api/huahuo_api.dart';
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'dart:async';
 
 import 'package:huahuoai_app/app/di/native_port_providers.dart';
@@ -8,8 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';
 import 'package:huahuoai_app/app/navigation/app_route_paths.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/recording_dao.dart';
 import 'package:huahuoai_app/core/native/native_file_port.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/features/ui_v3/application/script_draft_controller.dart';
 import 'package:huahuoai_app/features/ui_v3/data/script_draft_api.dart';
 import 'package:huahuoai_app/features/ui_v3/domain/script_draft_models.dart';

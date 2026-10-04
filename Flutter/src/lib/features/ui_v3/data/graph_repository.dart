@@ -1,6 +1,6 @@
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/api/api_client.dart';
 import '../domain/graph_snapshot.dart';
 
 // resident-provider: Keeps the graph id value consistent across sibling route consumers.

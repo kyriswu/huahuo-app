@@ -17,7 +17,6 @@ import 'package:huahuoai_app/app/bootstrap/app_visual_root.dart';
 import 'package:huahuoai_app/app/navigation/app_route_paths.dart';
 import 'package:huahuoai_app/app/navigation/app_router.dart';
 import 'package:huahuoai_app/app/runtime/runtime_provider_module.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
 import 'package:huahuoai_app/core/auth/secure_token_store.dart';
 import 'package:huahuoai_app/core/auth/session_store.dart';
 import 'package:huahuoai_app/core/native/incoming_material_port.dart';

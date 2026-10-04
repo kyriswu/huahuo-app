@@ -1,3 +1,4 @@
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:huahuoai_app/app/bootstrap/app_providers.dart';

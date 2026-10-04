@@ -1,3 +1,5 @@
+import 'package:huahuoai_app/app/di/media_cache_providers.dart';
+import 'package:huahuoai_app/app/di/database_providers.dart';
 import 'package:huahuo_foundation/huahuo_foundation.dart' show HuahuoMarkdown;
 import 'dart:async';
 
@@ -15,8 +17,6 @@ import 'package:huahuoai_app/app/di/chat_providers.dart';
 import 'package:huahuoai_app/app/navigation/app_route_observer.dart';
 import 'package:huahuoai_app/app/navigation/app_routes.dart';
 import 'package:huahuoai_app/app/runtime/runtime_provider_module.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/database/user_metadata_dao.dart';

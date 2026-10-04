@@ -306,7 +306,8 @@ class _V3MyAssetsPageState extends ConsumerState<V3MyAssetsPage> {
           onChanged: (filters) => setState(() => _searchFilters = filters),
         ),
         Text(
-          controller.graphReadModel.sourceState == KnowledgeGraphSourceState.ready
+          controller.graphReadModel.sourceState ==
+                  KnowledgeGraphSourceState.ready
               ? '搜索范围：全部资产 · ${notes.length} 条匹配'
               : '搜索范围：全部资产 · 已加载 ${notes.length} 条匹配',
           key: const ValueKey('asset-search-result-count'),

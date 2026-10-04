@@ -10,8 +10,9 @@ failures use bounded exponential backoff with jitter.
 
 ## Scope
 
-This registration covers Assets live projection, Profile asset metrics, WorkAI
-task status, Chat derived-part status, and Chat thread-progress fallback.
+This registration covers account usage refresh, Assets live projection, Profile asset metrics, WorkAI
+task status, Chat derived-part status, Chat thread-progress fallback, and positioning
+coverage reads (3 second interval, 30 second maximum backoff, 15 second deadline).
 Feature lifecycles stop or dispose their poller when work becomes terminal or
 the owner is disposed. SSE remains authoritative for Chat Runs.
 

@@ -2,13 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:huahuo_api/huahuo_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:huahuoai_app/core/api/api_client.dart';
-import 'package:huahuoai_app/core/api/api_envelope.dart';
-import 'package:huahuoai_app/core/api/idempotency.dart';
-import 'package:huahuoai_app/core/api/upload_client.dart';
 import 'package:huahuoai_app/core/database/app_database.dart';
 import 'package:huahuoai_app/core/database/app_preferences_dao.dart';
 import 'package:huahuoai_app/core/database/database_worker.dart';
@@ -4451,12 +4448,12 @@ void main() {
           taskPollAttempts: 2,
         );
         final observedActivity =
-            <({String? status, List<AgentRunToolTrace> trace})>[];
+            <({String? status, List<AssistantToolTrace> trace})>[];
         controller.addListener(() {
           if (controller.state.agentRunStatus != null) {
             observedActivity.add((
               status: controller.state.agentRunStatus,
-              trace: controller.state.agentToolTrace,
+              trace: controller.state.assistantToolTrace,
             ));
           }
         });
@@ -4466,7 +4463,7 @@ void main() {
         expect(
           observedActivity,
           contains(
-            isA<({String? status, List<AgentRunToolTrace> trace})>()
+            isA<({String? status, List<AssistantToolTrace> trace})>()
                 .having((value) => value.status, 'status', 'running')
                 .having(
                   (value) => value.trace.single.toolName,
@@ -4481,11 +4478,11 @@ void main() {
           ),
         );
         expect(controller.state.agentRunStatus, 'succeeded');
-        expect(controller.state.agentToolTrace.single.outcome, 'succeeded');
+        expect(controller.state.assistantToolTrace.single.outcome, 'succeeded');
 
         controller.startNewThread();
         expect(controller.state.agentRunStatus, isNull);
-        expect(controller.state.agentToolTrace, isEmpty);
+        expect(controller.state.assistantToolTrace, isEmpty);
         controller.dispose();
       },
     );
